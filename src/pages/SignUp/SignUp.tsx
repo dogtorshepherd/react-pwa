@@ -10,12 +10,53 @@ import Container from '@mui/material/Container';
 import { useRef, useState } from 'react';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import FaceService from '@/services/FaceService';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import type { DialogProps } from "@mui/material";
+import axios from 'axios';
+import Loading from '@/components/Loading';
 
 export default function SignUp() {
   // const camera = useRef<CameraType>(null);
   // const [image, setImage] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [open, setOpen] = React.useState(false);
+  const [responseMessage, setResponseMessage] = useState<string | null>(null);
+  const [employeeId, setEmployeeId] = useState<string>('');
+  const [name, setName] = useState<string>('');
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const isButtonDisabled = !(employeeId && name && imagePreview);
+
+  // const handleClickOpen = () => {
+  //   axios.get('https://jsonplaceholder.typicode.com/todos/1')
+  //     .then(function (response) {
+  //       setTimeout(function () {
+  //         setResponseMessage('Request successful! Response: ' + response.data);
+  //       }, 3000);
+  //     })
+  //     .catch(function (error) {
+  //       setTimeout(function () {
+  //         setResponseMessage('Error: ' + error.message);
+  //       }, 3000);
+  //     });
+  //   setOpen(true);
+  // };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedImage(null);
+    setImagePreview(null);
+    setResponseMessage(null);
+    setEmployeeId('');
+    setName('');
+  };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -33,19 +74,35 @@ export default function SignUp() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const employeeId = data.get('employeeId')?.toString();
-    const name = data.get('name')?.toString();
     // await updateImageState();
+    setOpen(true);
     if (employeeId && name && imagePreview) {
-      FaceService.registerFace(employeeId, name, imagePreview)
-        .then((response) => {
-          console.log(response)
+      FaceService.detectFace(imagePreview)
+        .then(() => {
+          FaceService.registerFace(employeeId, name, imagePreview)
+            .then((response) => {
+              setResponseMessage('Request successful! Response: ' + response.data);
+            })
+            .catch((error) => {
+              setResponseMessage('Error: ' + error.message);
+            });
         })
-        .catch((err) => {
-          console.log(err)
+        .catch((error) => {
+          setResponseMessage('Error: ' + error.message);
         });
     }
+    // setOpen(true);
+    // axios.get('https://jsonplaceholder.typicode.com/todos/1')
+    //   .then(function (response) {
+    //     setTimeout(function () {
+    //       setResponseMessage('Request successful! Response: ' + response.data);
+    //     }, 3000);
+    //   })
+    //   .catch(function (error) {
+    //     setTimeout(function () {
+    //       setResponseMessage('Error: ' + error.message);
+    //     }, 3000);
+    //   });
   };
 
   // const updateImageState = () => {
@@ -129,6 +186,8 @@ export default function SignUp() {
                 id="employeeId"
                 label="Employee ID"
                 name="employeeId"
+                value={employeeId}
+                onChange={(e) => setEmployeeId(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -138,10 +197,13 @@ export default function SignUp() {
                 id="name"
                 label="Name"
                 name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </Grid>
           </Grid>
           <Button
+            disabled={isButtonDisabled}
             type="submit"
             fullWidth
             variant="contained"
@@ -150,7 +212,37 @@ export default function SignUp() {
             Sign Up
           </Button>
         </Box>
+        <Dialog
+          fullScreen={fullScreen}
+          open={open}
+          // onClose={handleClose}
+          aria-labelledby="responsive-dialog-title"
+        >
+          <DialogTitle id="responsive-dialog-title">
+            {"Metsakuur"}
+          </DialogTitle>
+          {responseMessage ?
+            <>
+              <DialogContent>
+                <DialogContentText>
+                  {responseMessage}
+                </DialogContentText>
+              </DialogContent><DialogActions>
+                <Button onClick={handleClose} autoFocus>
+                  OK
+                </Button>
+              </DialogActions>
+            </> :
+            <Box
+              sx={{
+                // minWidth: 200,
+                minHeight: 100,
+              }}
+            >
+              <Loading />
+            </Box>}
+        </Dialog>
       </Box>
-    </Container>
+    </Container >
   );
 }
