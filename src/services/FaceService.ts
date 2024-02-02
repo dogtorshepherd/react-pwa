@@ -9,7 +9,7 @@ const registerFace = (employeeId: string, name: string, image: string): Promise<
   formData.append("Secret", secret);
   formData.append("Id", employeeId);
   formData.append("Name", name);
-  formData.append("Face", image);
+  formData.append("Face", image.split(',')[1]);
 
   return http.post("/register", formData);
 };
@@ -26,7 +26,7 @@ const deleteFace = (employeeId: string): Promise<any> => {
 const detectFace = (image: string): Promise<any> => {
   let formData = new FormData();
 
-  formData.append("Face", image);
+  formData.append("Face", image.split(',')[1]);
 
   return http.post("/detect", formData);
 };
@@ -36,22 +36,9 @@ const verifyFace = (employeeId: string, image: string): Promise<any> => {
 
   formData.append("Path", path);
   formData.append("Id", employeeId);
-  formData.append("Face", image);
+  formData.append("Face", image.split(',')[1]);
 
   return http.post("/verify", formData);
-};
-
-const upload = (file: File, onUploadProgress: any): Promise<any> => {
-  let formData = new FormData();
-
-  formData.append("file", file);
-
-  return http.post("/upload", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-    onUploadProgress,
-  });
 };
 
 const FaceService = {
@@ -59,7 +46,6 @@ const FaceService = {
   deleteFace,
   detectFace,
   verifyFace,
-  upload,
 };
 
 export default FaceService;
