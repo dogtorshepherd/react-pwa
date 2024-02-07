@@ -1,7 +1,7 @@
 import http from "../http-common";
 
 const secret = "keykeykeykeykey"
-const path = "https://192.168.1.204/guest/fortigate_cp.php?login&post=http://172.16.2.1:1000/fgtauth&magic=030d0d90d699c5a8&usermac=74:da:38:9f:cb:93&apmac=70:4c:a5:5e:3f:24&apip=172.16.2.1&userip=172.16.2.10&ssid=Captive%20portal&apname=FGT51E3U17001115&bssid=00:00:00:00:00:00&_browser=1"
+const path = "http://172.16.0.102:5173/sign-in?login&post=http://192.168.3.1:1000/fgtauth&magic=06000584b997c9c0&usermac=58:6c:25:8c:ea:92&apmac=00:00:00:00:00:00&apip=192.168.3.1&userip=192.168.3.105&ssid=metsakuur&apname=FGT6HD3917801056&bssid=00:00:00:00:00:00&device_type=windows-pc"
 
 const registerFace = (employeeId: string, name: string, image: string): Promise<any> => {
   let formData = new FormData();
