@@ -35,8 +35,8 @@ function App() {
           <HotKeys />
           <SW />
           <BrowserRouter>
-            <Header />
-            <Sidebar />
+            {/* <Header />
+            <Sidebar /> */}
             <Pages />
           </BrowserRouter>
         </Fragment>

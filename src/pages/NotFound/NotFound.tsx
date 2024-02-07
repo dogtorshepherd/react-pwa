@@ -9,22 +9,22 @@ function NotFound() {
   return (
     <Container sx={{ height: '100%' }}>
       <FullSizeCenteredFlexBox flexDirection="column">
-        <iframe
+        {/* <iframe
           src={giphy404}
           width="100%"
           height="50%"
           style={{ maxHeight: '60%', maxWidth: '100%' }}
           frameBorder="0"
           allowFullScreen
-        />
+        /> */}
         <CenteredFlexBox flexDirection="column">
           <Typography sx={{ mt: 2 }} variant="h4" color="error">
             404 Not Found
           </Typography>
-          <Divider variant="middle" />
+          {/* <Divider variant="middle" />
           <Typography variant="h4" sx={{ color: (theme) => theme.palette.info.main }}>
             {messages[404]}
-          </Typography>
+          </Typography> */}
         </CenteredFlexBox>
       </FullSizeCenteredFlexBox>
     </Container>

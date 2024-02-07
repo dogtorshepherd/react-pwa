@@ -6,8 +6,8 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-// import { Camera, CameraType } from '@/components/Camera';
-import { useRef, useState } from 'react';
+import { Camera, CameraType } from '@/components/Camera';
+import { useEffect, useRef, useState } from 'react';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import FaceService from '@/services/FaceService';
 import Dialog from '@mui/material/Dialog';
@@ -22,64 +22,31 @@ import axios from 'axios';
 import Loading from '@/components/Loading';
 
 export default function SignUp() {
-  // const camera = useRef<CameraType>(null);
-  // const [image, setImage] = useState<string | null>(null);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const camera = useRef<CameraType>(null);
+  const [image, setImage] = useState<string | null>(null);
+  // const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  // const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [open, setOpen] = React.useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
   const [employeeId, setEmployeeId] = useState<string>('');
   const [name, setName] = useState<string>('');
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-  const isButtonDisabled = !(employeeId && name && imagePreview);
-
-  // const handleClickOpen = () => {
-  //   axios.get('https://jsonplaceholder.typicode.com/todos/1')
-  //     .then(function (response) {
-  //       setTimeout(function () {
-  //         setResponseMessage('Request successful! Response: ' + response.data);
-  //       }, 3000);
-  //     })
-  //     .catch(function (error) {
-  //       setTimeout(function () {
-  //         setResponseMessage('Error: ' + error.message);
-  //       }, 3000);
-  //     });
-  //   setOpen(true);
-  // };
+  const isButtonDisabled = !(employeeId && name);
 
   const handleClose = () => {
     setOpen(false);
-    setSelectedImage(null);
-    setImagePreview(null);
+    setImage(null);
     setResponseMessage(null);
     setEmployeeId('');
     setName('');
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const selectedFile = event.target.files[0];
-      setSelectedImage(selectedFile);
-
-      // Create a data URL for image preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(selectedFile);
-    }
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // await updateImageState();
-    setOpen(true);
-    if (employeeId && name && imagePreview) {
-      FaceService.detectFace(imagePreview)
+  useEffect(() => {
+    if (employeeId && name && image) {
+      FaceService.detectFace(image)
         .then(() => {
-          FaceService.registerFace(employeeId, name, imagePreview)
+          FaceService.registerFace(employeeId, name, image)
             .then((response) => {
               setResponseMessage('Request successful! Response: ' + response.data);
             })
@@ -91,26 +58,34 @@ export default function SignUp() {
           setResponseMessage('Error: ' + error.message);
         });
     }
-    // setOpen(true);
-    // axios.get('https://jsonplaceholder.typicode.com/todos/1')
-    //   .then(function (response) {
-    //     setTimeout(function () {
-    //       setResponseMessage('Request successful! Response: ' + response.data);
-    //     }, 3000);
-    //   })
-    //   .catch(function (error) {
-    //     setTimeout(function () {
-    //       setResponseMessage('Error: ' + error.message);
-    //     }, 3000);
-    //   });
-  };
+  },[image]);
 
-  // const updateImageState = () => {
-  //   if (camera.current) {
-  //     const photo = camera.current.takePhoto();
-  //     setImage(photo)
+  // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.files && event.target.files[0]) {
+  //     const selectedFile = event.target.files[0];
+  //     setSelectedImage(selectedFile);
+
+  //     // Create a data URL for image preview
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       setImagePreview(e.target?.result as string);
+  //     };
+  //     reader.readAsDataURL(selectedFile);
   //   }
   // };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    updateImageState();
+    setOpen(true);
+  };
+
+  const updateImageState = () => {
+    if (camera.current) {
+      const photo = camera.current.takePhoto();
+      setImage(photo)
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -132,7 +107,7 @@ export default function SignUp() {
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Box
+              {/* <Box
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
@@ -161,8 +136,8 @@ export default function SignUp() {
                     Choose Image
                   </Button>
                 </label>
-              </Box>
-              {/* <Box
+              </Box> */}
+              <Box
                 sx={{
                   maxWidth: 200,
                   marginLeft: "auto",
@@ -177,7 +152,7 @@ export default function SignUp() {
                     switchCamera: 'It is not possible to switch camera to different one because there is only one video device accessible.',
                     canvas: 'Canvas is not supported.',
                   }} />
-              </Box> */}
+              </Box>
             </Grid>
             <Grid item xs={12}>
               <TextField
