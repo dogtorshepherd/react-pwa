@@ -77,17 +77,19 @@ export default function SignIn() {
     if (employeeId && imagePreview) {
       FaceService.detectFace(imagePreview)
         .then(() => {
-          FaceService.verifyFace(employeeId, imagePreview)
+          FaceService.verifyFace(employeeId, "", imagePreview)
             .then((response) => {
-              console.log(response)
-              setResponseMessage('Request successful! Response: ' + response.data);
+              // setResponseMessage('Request successful! Response: ' + response.data);
+              setResponseMessage('Succeed');
             })
             .catch((error) => {
-              setResponseMessage('Error: ' + error.message);
+              // setResponseMessage('Error: ' + error.message);
+              setResponseMessage('Fail');
             });
         })
         .catch((error) => {
-          setResponseMessage('Error: ' + error.message);
+          // setResponseMessage('Error: ' + error.message);
+          setResponseMessage('Fail');
         });
     }
     // setOpen(true);

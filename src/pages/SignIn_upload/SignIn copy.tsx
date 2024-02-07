@@ -37,7 +37,7 @@ export default function SignIn() {
     const employeeId = data.get('employeeId')?.toString();
     // await updateImageState();
     if (employeeId && imagePreview) {
-      FaceService.verifyFace(employeeId, imagePreview)
+      FaceService.verifyFace(employeeId, "", imagePreview)
         .then((response) => {
           console.log(response)
         })

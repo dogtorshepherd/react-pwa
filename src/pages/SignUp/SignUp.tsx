@@ -48,14 +48,17 @@ export default function SignUp() {
         .then(() => {
           FaceService.registerFace(employeeId, name, image)
             .then((response) => {
-              setResponseMessage('Request successful! Response: ' + response.data);
+              // setResponseMessage('Request successful! Response: ' + response.data);
+              setResponseMessage('Succeed');
             })
             .catch((error) => {
-              setResponseMessage('Error: ' + error.message);
+              // setResponseMessage('Error: ' + error.message);
+              setResponseMessage('Fail');
             });
         })
         .catch((error) => {
-          setResponseMessage('Error: ' + error.message);
+          // setResponseMessage('Error: ' + error.message);
+          setResponseMessage('Fail');
         });
     }
   },[image]);
