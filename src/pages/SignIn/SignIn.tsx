@@ -46,17 +46,52 @@ export default function SignIn() {
         .then(() => {
           FaceService.verifyFace(employeeId, "", image)
             .then((response) => {
+              // console.log(employeeId);
+              // console.log(image);
+              // console.log(response.data);
+              // console.log(response.status);
+              // console.log(response.headers);
               // setResponseMessage('Request successful! Response: ' + response.data);
-              setResponseMessage('Succeed');
+              setResponseMessage('ยืนยันตัวตนสำเร็จ');
             })
             .catch((error) => {
+              // if (error.response) {
+              //   // The request was made and the server responded with a status code
+              //   // that falls out of the range of 2xx
+              //   console.log(error.response.data);
+              //   console.log(error.response.status);
+              //   console.log(error.response.headers);
+              // } else if (error.request) {
+              //   // The request was made but no response was received
+              //   // `error.request` is an instance of XMLHttpRequest in the browser 
+              //   // and an instance of http.ClientRequest in node.js
+              //   console.log(error.request);
+              // } else {
+              //   // Something happened in setting up the request that triggered an Error
+              //   console.log('Error', error.message);
+              // }
               // setResponseMessage('Error: ' + error.message);
-              setResponseMessage('Fail');
+              setResponseMessage('เกิดข้อผิดพลาด');
             });
         })
         .catch((error) => {
+          // if (error.response) {
+          //   // The request was made and the server responded with a status code
+          //   // that falls out of the range of 2xx
+          //   console.log(error.response.data);
+          //   console.log(error.response.status);
+          //   console.log(error.response.headers);
+          // } else if (error.request) {
+          //   // The request was made but no response was received
+          //   // `error.request` is an instance of XMLHttpRequest in the browser 
+          //   // and an instance of http.ClientRequest in node.js
+          //   console.log(error.request);
+          // } else {
+          //   // Something happened in setting up the request that triggered an Error
+          //   console.log('Error', error.message);
+          // }
           // setResponseMessage('Error: ' + error.message);
-          setResponseMessage('Fail');
+          setResponseMessage('เกิดข้อผิดพลาด');
         });
     }
   },[image]);

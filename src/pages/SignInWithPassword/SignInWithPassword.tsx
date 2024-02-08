@@ -21,7 +21,7 @@ import type { DialogProps } from "@mui/material";
 import axios from 'axios';
 import Loading from '@/components/Loading';
 
-export default function SignUp() {
+export default function SignInWithPassword() {
   const camera = useRef<CameraType>(null);
   const [image, setImage] = useState<string | null>(null);
   // const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -29,33 +29,32 @@ export default function SignUp() {
   const [open, setOpen] = React.useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
   const [employeeId, setEmployeeId] = useState<string>('');
-  const [name, setName] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-  const isButtonDisabled = !(employeeId && name);
+  const isButtonDisabled = !(employeeId && password);
 
   const handleClose = () => {
     setOpen(false);
     setImage(null);
     setResponseMessage(null);
     setEmployeeId('');
-    setName('');
+    setPassword('');
   };
 
   useEffect(() => {
-    if (employeeId && name && image) {
+    if (employeeId && password && image) {
       FaceService.detectFace(image)
         .then(() => {
-          FaceService.registerFace(employeeId, name, image)
+          FaceService.verifyFace(employeeId, password, image)
             .then((response) => {
               // console.log(employeeId);
-              // console.log(name);
               // console.log(image);
               // console.log(response.data);
               // console.log(response.status);
               // console.log(response.headers);
               // setResponseMessage('Request successful! Response: ' + response.data);
-              setResponseMessage('ลงทะเบียนใบหน้าสำเร็จ');
+              setResponseMessage('ยืนยันตัวตนสำเร็จ');
             })
             .catch((error) => {
               // if (error.response) {
@@ -74,7 +73,6 @@ export default function SignUp() {
               //   console.log('Error', error.message);
               // }
               // setResponseMessage('Error: ' + error.message);
-              // setResponseMessage('Error: ' + error);
               setResponseMessage('เกิดข้อผิดพลาด');
             });
         })
@@ -95,7 +93,6 @@ export default function SignUp() {
           //   console.log('Error', error.message);
           // }
           // setResponseMessage('Error: ' + error.message);
-          // setResponseMessage('Error: ' + error);
           setResponseMessage('เกิดข้อผิดพลาด');
         });
     }
@@ -143,7 +140,7 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar> */}
         <Typography component="h1" variant="h5">
-          Sign up
+          Sign In With Password
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
@@ -210,11 +207,11 @@ export default function SignUp() {
               <TextField
                 required
                 fullWidth
-                id="name"
-                label="Name"
-                name="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                id="password"
+                label="Password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>
           </Grid>
@@ -225,7 +222,7 @@ export default function SignUp() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign Up
+            Sign In With Password
           </Button>
         </Box>
         <Dialog
