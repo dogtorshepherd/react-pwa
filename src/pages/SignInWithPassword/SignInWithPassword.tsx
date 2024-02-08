@@ -20,6 +20,7 @@ import { useTheme } from '@mui/material/styles';
 import type { DialogProps } from "@mui/material";
 import axios from 'axios';
 import Loading from '@/components/Loading';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignInWithPassword() {
   const camera = useRef<CameraType>(null);
@@ -33,6 +34,7 @@ export default function SignInWithPassword() {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const isButtonDisabled = !(employeeId && password);
+  const navigate = useNavigate();
 
   const handleClose = () => {
     setOpen(false);
@@ -40,6 +42,7 @@ export default function SignInWithPassword() {
     setResponseMessage(null);
     setEmployeeId('');
     setPassword('');
+    navigate('/welcome');
   };
 
   useEffect(() => {
@@ -226,7 +229,7 @@ export default function SignInWithPassword() {
           </Button>
         </Box>
         <Dialog
-          fullScreen={fullScreen}
+          // fullScreen={fullScreen}
           open={open}
           // onClose={handleClose}
           aria-labelledby="responsive-dialog-title"

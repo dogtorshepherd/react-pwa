@@ -229,7 +229,7 @@ export default function SignUp() {
           </Button>
         </Box>
         <Dialog
-          fullScreen={fullScreen}
+          // fullScreen={fullScreen}
           open={open}
           // onClose={handleClose}
           aria-labelledby="responsive-dialog-title"

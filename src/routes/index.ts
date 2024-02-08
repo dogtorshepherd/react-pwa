@@ -11,12 +11,12 @@ import asyncComponentLoader from '@/utils/loader';
 import { Pages, Routes } from './types';
 
 const routes: Routes = {
-  // [Pages.Welcome]: {
-  //   component: asyncComponentLoader(() => import('@/pages/Welcome')),
-  //   path: '/',
-  //   title: 'Welcome',
-  //   icon: HomeIcon,
-  // },
+  [Pages.Welcome]: {
+    component: asyncComponentLoader(() => import('@/pages/Welcome')),
+    path: '/welcome',
+    title: 'Welcome',
+    icon: HomeIcon,
+  },
   // [Pages.Page1]: {
   //   component: asyncComponentLoader(() => import('@/pages/Page1')),
   //   path: '/page-1',
