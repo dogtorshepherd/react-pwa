@@ -40,7 +40,7 @@ export default function SignIn() {
     setImage(null);
     setResponseMessage(null);
     setEmployeeId('');
-    navigate('/welcome');
+    // navigate('/welcome');
   };
 
   useEffect(() => {

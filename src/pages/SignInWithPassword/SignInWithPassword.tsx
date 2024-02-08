@@ -42,7 +42,7 @@ export default function SignInWithPassword() {
     setResponseMessage(null);
     setEmployeeId('');
     setPassword('');
-    navigate('/welcome');
+    // navigate('/welcome');
   };
 
   useEffect(() => {
