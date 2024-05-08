@@ -49,39 +49,42 @@ export default function SignIn() {
         .then(() => {
           FaceService.verifyFace(employeeId, "", image)
             .then(async (response) => {
-              const username = response.data.Id;
-              const url = "http://192.168.3.1:1000";
-              const password = response.data.Password;
-              try {
-                const location = useLocation();
-                const searchParams = new URLSearchParams(location.search);
-                const magic = searchParams.get('magic');
-                const data = {
-                  magic: magic,
-                  username: username,
-                  password: password
-                };
-                const response = await fetch(url, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify(data)
-                });
-            
-                if (!response.ok) {
-                  throw new Error("Network response was not ok");
+              if (response.status == 200) {
+                setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                const username = response.data.Id;
+                const url = "http://192.168.3.1:1000";
+                const password = response.data.Password;
+                try {
+                  const location = useLocation();
+                  const searchParams = new URLSearchParams(location.search);
+                  const magic = searchParams.get('magic');
+                  const data = {
+                    magic: magic,
+                    username: username,
+                    password: password
+                  };
+                  const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                  });
+              
+                  if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                  }
+              
+                  const responseData = await response.json();
+                  // Do something with the response data
+                  console.log(responseData);
+                } catch (error) {
+                  // Handle errors
+                  console.error("Fortinet Error:", error);
                 }
-            
-                const responseData = await response.json();
-                // Do something with the response data
-                console.log(responseData);
-              } catch (error) {
-                // Handle errors
-                console.error("Error:", error);
+              } else {
+                setResponseMessage('เกิดข้อผิดพลาด');
               }
-              // window.location.href = "https://www.youtube.com/";
-              setResponseMessage('ยืนยันตัวตนสำเร็จ');
             })
             .catch((error) => {
               // if (error.response) {

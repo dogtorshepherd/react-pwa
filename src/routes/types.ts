@@ -9,6 +9,7 @@ enum Pages {
   SignIn,
   SignInWithPassword,
   Welcome,
+  SignInWithImage
 }
 
 type PathRouteCustomProps = {

@@ -20,8 +20,9 @@ import { useTheme } from '@mui/material/styles';
 import type { DialogProps } from "@mui/material";
 import axios from 'axios';
 import Loading from '@/components/Loading';
+import { useLocation } from 'react-router-dom';
 
-export default function SignIn() {
+export default function SignInWithImage() {
   // const camera = useRef<CameraType>(null);
   // const [image, setImage] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -77,14 +78,35 @@ export default function SignIn() {
     if (employeeId && imagePreview) {
       FaceService.detectFace(imagePreview)
         .then(() => {
-          FaceService.verifyFace(employeeId, "", imagePreview)
-            .then((response) => {
-              // setResponseMessage('Request successful! Response: ' + response.data);
-              setResponseMessage('Succeed');
+          FaceService.verifyFace(employeeId, "P@ssw0rd", imagePreview)
+            .then(async (response) => {
+              if (response.status == 200) {
+                setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                const employeeId = response.data.Id;
+                const password = response.data.Password;
+                FaceService.loginFortinet(employeeId, password).then(async (response) => { console.log(response) })
+              } else {
+                setResponseMessage('เกิดข้อผิดพลาด');
+              }
             })
             .catch((error) => {
+              // if (error.response) {
+              //   // The request was made and the server responded with a status code
+              //   // that falls out of the range of 2xx
+              //   console.log(error.response.data);
+              //   console.log(error.response.status);
+              //   console.log(error.response.headers);
+              // } else if (error.request) {
+              //   // The request was made but no response was received
+              //   // `error.request` is an instance of XMLHttpRequest in the browser 
+              //   // and an instance of http.ClientRequest in node.js
+              //   console.log(error.request);
+              // } else {
+              //   // Something happened in setting up the request that triggered an Error
+              //   console.log('Error', error.message);
+              // }
               // setResponseMessage('Error: ' + error.message);
-              setResponseMessage('Fail');
+              setResponseMessage('เกิดข้อผิดพลาด');
             });
         })
         .catch((error) => {
@@ -104,6 +126,10 @@ export default function SignIn() {
     //       setResponseMessage('Error: ' + error.message);
     //     }, 3000);
     //   });
+  };
+
+  const handleLogout = async () => {
+    FaceService.loginFortinet("face04", "P@ssw0rd").then(async (response) => { console.log(response) })
   };
 
   // const updateImageState = () => {
@@ -201,6 +227,9 @@ export default function SignIn() {
           >
             Sign In
           </Button>
+          <button onClick={handleLogout}>
+            Logout
+          </button>
         </Box>
         <Dialog
           fullScreen={fullScreen}

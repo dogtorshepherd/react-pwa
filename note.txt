@@ -1,3 +1,7 @@
 sudo systemctl start nginx
 ngrok http http://localhost:80
 edit dialog
+
+fetch fortinet for internet
+default route
+redirect after sign up/in success
