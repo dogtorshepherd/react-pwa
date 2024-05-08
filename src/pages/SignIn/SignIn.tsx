@@ -50,7 +50,7 @@ export default function SignIn() {
           FaceService.verifyFace(employeeId, "", image)
             .then(async (response) => {
               const username = response.data.Id;
-              const url = "https://192.168.3.1:1000";
+              const url = "http://192.168.3.1:1000";
               const password = response.data.Password;
               try {
                 const location = useLocation();
