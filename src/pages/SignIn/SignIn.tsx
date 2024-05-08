@@ -20,7 +20,7 @@ import { useTheme } from '@mui/material/styles';
 import type { DialogProps } from "@mui/material";
 import axios from 'axios';
 import Loading from '@/components/Loading';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignIn() {
   const camera = useRef<CameraType>(null);
@@ -45,43 +45,27 @@ export default function SignIn() {
 
   useEffect(() => {
     if (employeeId && image) {
+      const href = window.location.href;
+      const urlObj = new URL(href);
+      const magic = urlObj.searchParams.get("magic") ?? "";
+      const path = href.substring(href.indexOf('?'));
       FaceService.detectFace(image)
         .then(() => {
-          FaceService.verifyFace(employeeId, "", image)
+          FaceService.verifyFace(employeeId, "", image, path)
             .then(async (response) => {
-              const username = response.data.Id;
-              const url = "https://192.168.3.1:1000";
-              const password = response.data.Password;
-              try {
-                const location = useLocation();
-                const searchParams = new URLSearchParams(location.search);
-                const magic = searchParams.get('magic');
-                const data = {
-                  magic: magic,
-                  username: username,
-                  password: password
-                };
-                const response = await fetch(url, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify(data)
-                });
-            
-                if (!response.ok) {
-                  throw new Error("Network response was not ok");
-                }
-            
-                const responseData = await response.json();
-                // Do something with the response data
-                console.log(responseData);
-              } catch (error) {
-                // Handle errors
-                console.error("Error:", error);
+              if (response.status == 200) {
+                const username = response.data.Id;
+                const password = response.data.Password;
+                FaceService.loginFortinet(magic, username, password).then((async (response) => {
+                  console.log(response)
+                  if (response.status == 200) {
+                    window.location.href = "https://www.google.com/";
+                    setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                  } else {
+                    setResponseMessage('เกิดข้อผิดพลาด');
+                  }
+                }))
               }
-              // window.location.href = "https://www.youtube.com/";
-              setResponseMessage('ยืนยันตัวตนสำเร็จ');
             })
             .catch((error) => {
               // if (error.response) {
@@ -123,7 +107,7 @@ export default function SignIn() {
           setResponseMessage('เกิดข้อผิดพลาด');
         });
     }
-  },[image]);
+  }, [image]);
 
   // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   if (event.target.files && event.target.files[0]) {

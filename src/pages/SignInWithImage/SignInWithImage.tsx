@@ -17,7 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import Loading from '@/components/Loading';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 export default function SignInWithImage() {
@@ -59,38 +59,38 @@ export default function SignInWithImage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // await updateImageState();
     setOpen(true);
     if (employeeId && password && imagePreview) {
+      const href = window.location.href;
+      const urlObj = new URL(href);
+      const magic = urlObj.searchParams.get("magic") ?? "";
+      const path = href.substring(href.indexOf('?'));
       FaceService.detectFace(imagePreview)
         .then(() => {
-          FaceService.verifyFace(employeeId, password, imagePreview)
-            .then((response) => {
-              // setResponseMessage('Request successful! Response: ' + response.data);
-              setResponseMessage('Succeed');
+          FaceService.verifyFace(employeeId, password, imagePreview, path)
+            .then(async (response) => {
+              if (response.status == 200) {
+                const username = response.data.Id;
+                const password = response.data.Password;
+                FaceService.loginFortinet(magic, username, password).then((async (response) => {
+                  console.log(response)
+                  if (response.status == 200) {
+                    window.location.href = "https://www.google.com/";
+                    setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                  } else {
+                    setResponseMessage('เกิดข้อผิดพลาด');
+                  }
+                }))
+              }
             })
             .catch((error) => {
-              // setResponseMessage('Error: ' + error.message);
-              setResponseMessage('Fail');
+              setResponseMessage('เกิดข้อผิดพลาด');
             });
         })
         .catch((error) => {
-          // setResponseMessage('Error: ' + error.message);
-          setResponseMessage('Fail');
+          setResponseMessage('เกิดข้อผิดพลาด');
         });
     }
-    // setOpen(true);
-    // axios.get('https://jsonplaceholder.typicode.com/todos/1')
-    //   .then(function (response) {
-    //     setTimeout(function () {
-    //       setResponseMessage('Request successful! Response: ' + response.data);
-    //     }, 3000);
-    //   })
-    //   .catch(function (error) {
-    //     setTimeout(function () {
-    //       setResponseMessage('Error: ' + error.message);
-    //     }, 3000);
-    //   });
   };
 
   return (

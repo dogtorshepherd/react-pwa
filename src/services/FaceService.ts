@@ -1,8 +1,6 @@
 import http from "../http-common";
 
 const secret = "keykeykeykeykey"
-// const path = "?login&post=http://192.168.3.1:1000/fgtauth&magic=06000584b997c9c0&usermac=58:6c:25:8c:ea:92&apmac=00:00:00:00:00:00&apip=192.168.3.1&userip=192.168.3.105&ssid=metsakuur&apname=FGT6HD3917801056&bssid=00:00:00:00:00:00&device_type=windows-pc"
-const path = "?login&post=http://192.168.3.1:1000/fgtauth"
 
 const registerFace = (employeeId: string, name: string, image: string): Promise<any> => {
   let formData = new FormData();
@@ -32,10 +30,10 @@ const detectFace = (image: string): Promise<any> => {
   return http.post("/detect", formData);
 };
 
-const verifyFace = (employeeId: string, password: string, image: string): Promise<any> => {
+const verifyFace = (employeeId: string, password: string, image: string, path: string): Promise<any> => {
   let formData = new FormData();
 
-  if(password){
+  if (password) {
     formData.append("Path", "http://172.16.0.102/sign-in-with-password" + path);
   } else {
     formData.append("Path", "http://172.16.0.102/sign-in" + path);
@@ -48,11 +46,25 @@ const verifyFace = (employeeId: string, password: string, image: string): Promis
   return http.post("/verify", formData);
 };
 
+const loginFortinet = (magic: string, username: string, password: string): Promise<any> => {
+  let formData = new FormData();
+  formData.append("magic", magic);
+  formData.append("username", username);
+  formData.append("password", password);
+  return http.post("https://192.168.3.1:1000", formData);
+};
+
+const logoutFortinet = (): Promise<any> => {
+  return http.get("https://192.168.3.1:1000/logout?");
+};
+
 const FaceService = {
   registerFace,
   deleteFace,
   detectFace,
   verifyFace,
+  loginFortinet,
+  logoutFortinet,
 };
 
 export default FaceService;
