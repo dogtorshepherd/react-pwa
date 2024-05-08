@@ -20,6 +20,7 @@ import { useTheme } from '@mui/material/styles';
 import type { DialogProps } from "@mui/material";
 import axios from 'axios';
 import Loading from '@/components/Loading';
+import { Link } from 'react-router-dom';
 
 export default function SignUp() {
   const camera = useRef<CameraType>(null);
@@ -227,6 +228,16 @@ export default function SignUp() {
           >
             Sign Up
           </Button>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Link to="/sign-in" style={{ textAlign: 'center' }}>
+              Sign In
+            </Link>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Link to="/sign-in-with-password" style={{ textAlign: 'center' }}>
+              Sign In with Password
+            </Link>
+          </div>
         </Box>
         <Dialog
           // fullScreen={fullScreen}

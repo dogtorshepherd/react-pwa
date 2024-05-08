@@ -20,7 +20,7 @@ import { useTheme } from '@mui/material/styles';
 import type { DialogProps } from "@mui/material";
 import axios from 'axios';
 import Loading from '@/components/Loading';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 export default function SignIn() {
   const camera = useRef<CameraType>(null);
@@ -48,13 +48,39 @@ export default function SignIn() {
       FaceService.detectFace(image)
         .then(() => {
           FaceService.verifyFace(employeeId, "", image)
-            .then((response) => {
-              // console.log(employeeId);
-              // console.log(image);
-              // console.log(response.data);
-              // console.log(response.status);
-              // console.log(response.headers);
-              // setResponseMessage('Request successful! Response: ' + response.data);
+            .then(async (response) => {
+              const username = response.data.Id;
+              const url = "https://192.168.3.1:1000";
+              const password = response.data.Password;
+              try {
+                const location = useLocation();
+                const searchParams = new URLSearchParams(location.search);
+                const magic = searchParams.get('magic');
+                const data = {
+                  magic: magic,
+                  username: username,
+                  password: password
+                };
+                const response = await fetch(url, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify(data)
+                });
+            
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+            
+                const responseData = await response.json();
+                // Do something with the response data
+                console.log(responseData);
+              } catch (error) {
+                // Handle errors
+                console.error("Error:", error);
+              }
+              // window.location.href = "https://www.youtube.com/";
               setResponseMessage('ยืนยันตัวตนสำเร็จ');
             })
             .catch((error) => {
@@ -214,6 +240,16 @@ export default function SignIn() {
           >
             Sign In
           </Button>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Link to="/sign-in-with-password" style={{ textAlign: 'center' }}>
+              Sign In with Password
+            </Link>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Link to="/sign-up" style={{ textAlign: 'center' }}>
+              Sign Up
+            </Link>
+          </div>
         </Box>
         <Dialog
           // fullScreen={fullScreen}

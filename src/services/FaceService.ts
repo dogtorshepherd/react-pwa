@@ -1,7 +1,8 @@
 import http from "../http-common";
 
 const secret = "keykeykeykeykey"
-const path = "?login&post=http://192.168.3.1:1000/fgtauth&magic=06000584b997c9c0&usermac=58:6c:25:8c:ea:92&apmac=00:00:00:00:00:00&apip=192.168.3.1&userip=192.168.3.105&ssid=metsakuur&apname=FGT6HD3917801056&bssid=00:00:00:00:00:00&device_type=windows-pc"
+// const path = "?login&post=http://192.168.3.1:1000/fgtauth&magic=06000584b997c9c0&usermac=58:6c:25:8c:ea:92&apmac=00:00:00:00:00:00&apip=192.168.3.1&userip=192.168.3.105&ssid=metsakuur&apname=FGT6HD3917801056&bssid=00:00:00:00:00:00&device_type=windows-pc"
+const path = "?login&post=http://192.168.3.1:1000/fgtauth"
 
 const registerFace = (employeeId: string, name: string, image: string): Promise<any> => {
   let formData = new FormData();
