@@ -1,0 +1,29 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to machine A
+        uses: appleboy/ssh-action@master
+        with:
+          host: 172.16.0.102
+          username: som
+          key: Som123
+          script: |
+            cd /home/som/frontend
+            git pull
+            npm ci
+            npm run build
