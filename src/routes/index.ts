@@ -63,6 +63,12 @@ const routes: Routes = {
     title: 'SignInWithPassword',
     icon: LoginIcon,
   },
+  [Pages.SignInWithImage]: {
+    component: asyncComponentLoader(() => import('@/pages/SignInWithImage')),
+    path: '/sign-in-with-image',
+    title: 'SignInWithImage',
+    icon: LoginIcon,
+  },
 };
 
 export default routes;
