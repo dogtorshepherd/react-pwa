@@ -1,4 +1,17 @@
 import http from "../http-common";
+import axios from 'axios';
+import https from 'https';
+
+const axiosInstance = axios.create({
+  baseURL: 'https://192.168.3.1:1003',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    // Add other headers here
+  },
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false
+  })
+});
 
 const secret = "keykeykeykeykey"
 
@@ -46,16 +59,45 @@ const verifyFace = (employeeId: string, password: string, image: string, path: s
   return http.post("/verify", formData);
 };
 
-const loginFortinet = (magic: string, username: string, password: string): Promise<any> => {
-  let formData = new FormData();
-  formData.append("magic", magic);
-  formData.append("username", username);
-  formData.append("password", password);
-  return http.post("https://192.168.3.1:1000", formData);
+// const loginFortinet = async (magic: string, username: string, password: string): Promise<any> => {
+//   let formData = new FormData();
+//   formData.append("magic", magic);
+//   formData.append("username", username);
+//   formData.append("password", password);
+//   return http.post("https://192.168.3.1:1003/fgtauth", formData);
+// };
+
+const loginFortinet = async (magic: string, username: string, password: string): Promise<any> => {
+  try {
+    const fortiResult = await axios.post(
+      'https://192.168.3.1:1003/fgtauth',
+      new URLSearchParams({
+        magic: magic,
+        username: username,
+        password: password,
+      })
+    );
+    console.log('fortiResult:', fortiResult)
+  } catch (fortiError) {
+    console.error('fortiError:', fortiError);
+  }
+  return true
+  // try {
+  //   const googleResult = await axios.get('https://www.google.com', {
+  //     httpsAgent: new https.Agent({
+  //       rejectUnauthorized: false,
+  //     }),
+  //   });
+  //   console.log('googleResult:', googleResult)
+  //   return true
+  // } catch (googleError) {
+  //   console.error('googleError:', googleError);
+  // }
+  // return false
 };
 
 const logoutFortinet = (): Promise<any> => {
-  return http.get("https://192.168.3.1:1000/logout?");
+  return http.get("https://192.168.3.1:1003/logout?");
 };
 
 const FaceService = {

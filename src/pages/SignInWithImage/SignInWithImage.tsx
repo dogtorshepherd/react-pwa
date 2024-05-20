@@ -73,9 +73,9 @@ export default function SignInWithImage() {
                 const username = response.data.Id;
                 const password = response.data.Password;
                 FaceService.loginFortinet(magic, username, password).then((async (response) => {
-                  console.log(response)
-                  if (response.status == 200) {
-                    window.location.href = "https://www.google.com/";
+                  // console.log(response)
+                  if (response) {
+                    // window.location.href = "https://www.google.com/";
                     setResponseMessage('ยืนยันตัวตนสำเร็จ');
                   } else {
                     setResponseMessage('เกิดข้อผิดพลาด');
