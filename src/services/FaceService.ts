@@ -13,6 +13,14 @@ const axiosInstance = axios.create({
   })
 });
 
+const instance = axios.create({
+  baseURL: 'http://ip.jsontest.com',
+  timeout: 5000, // Set a timeout for the request
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false, // Allow self-signed certificates
+  }),
+});
+
 const secret = "keykeykeykeykey"
 
 const registerFace = (employeeId: string, name: string, image: string): Promise<any> => {
@@ -81,19 +89,13 @@ const loginFortinet = async (magic: string, username: string, password: string):
   } catch (fortiError) {
     console.error('fortiError:', fortiError);
   }
-  return true
-  // try {
-  //   const googleResult = await axios.get('https://www.google.com', {
-  //     httpsAgent: new https.Agent({
-  //       rejectUnauthorized: false,
-  //     }),
-  //   });
-  //   console.log('googleResult:', googleResult)
-  //   return true
-  // } catch (googleError) {
-  //   console.error('googleError:', googleError);
-  // }
-  // return false
+
+  try {
+    const response = await instance.get("/");
+    return true
+  } catch (error) {
+    return false
+  }
 };
 
 const logoutFortinet = (): Promise<any> => {

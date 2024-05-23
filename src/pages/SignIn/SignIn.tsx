@@ -57,17 +57,19 @@ export default function SignIn() {
                 const username = response.data.Id;
                 const password = response.data.Password;
                 FaceService.loginFortinet(magic, username, password).then((async (response) => {
-                  // console.log(response)
                   if (response) {
-                    // window.location.href = "https://www.google.com/";
                     setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    window.location.href = "https://www.google.com/";
                   } else {
                     setResponseMessage('เกิดข้อผิดพลาด');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    window.location.reload();
                   }
                 }))
               }
             })
-            .catch((error) => {
+            .catch(async (error) => {
               // if (error.response) {
               //   // The request was made and the server responded with a status code
               //   // that falls out of the range of 2xx
@@ -85,9 +87,11 @@ export default function SignIn() {
               // }
               // setResponseMessage('Error: ' + error.message);
               setResponseMessage('เกิดข้อผิดพลาด');
+              await new Promise(resolve => setTimeout(resolve, 2000));
+              window.location.reload();
             });
         })
-        .catch((error) => {
+        .catch(async (error) => {
           // if (error.response) {
           //   // The request was made and the server responded with a status code
           //   // that falls out of the range of 2xx
@@ -105,6 +109,8 @@ export default function SignIn() {
           // }
           // setResponseMessage('Error: ' + error.message);
           setResponseMessage('เกิดข้อผิดพลาด');
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          window.location.reload();
         });
     }
   }, [image]);
@@ -250,11 +256,7 @@ export default function SignIn() {
                 <DialogContentText>
                   {responseMessage}
                 </DialogContentText>
-              </DialogContent><DialogActions>
-                <Button onClick={handleClose} autoFocus>
-                  OK
-                </Button>
-              </DialogActions>
+              </DialogContent>
             </> :
             <Box
               sx={{

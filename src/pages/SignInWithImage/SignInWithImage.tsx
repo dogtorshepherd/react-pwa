@@ -73,22 +73,28 @@ export default function SignInWithImage() {
                 const username = response.data.Id;
                 const password = response.data.Password;
                 FaceService.loginFortinet(magic, username, password).then((async (response) => {
-                  // console.log(response)
                   if (response) {
-                    // window.location.href = "https://www.google.com/";
                     setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    window.location.href = "https://www.google.com/";
                   } else {
                     setResponseMessage('เกิดข้อผิดพลาด');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    window.location.reload();
                   }
                 }))
               }
             })
-            .catch((error) => {
+            .catch(async (error) => {
               setResponseMessage('เกิดข้อผิดพลาด');
+              await new Promise(resolve => setTimeout(resolve, 2000));
+              window.location.reload();
             });
         })
-        .catch((error) => {
+        .catch(async (error) => {
           setResponseMessage('เกิดข้อผิดพลาด');
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          window.location.reload();
         });
     }
   };
@@ -202,11 +208,7 @@ export default function SignInWithImage() {
                 <DialogContentText>
                   {responseMessage}
                 </DialogContentText>
-              </DialogContent><DialogActions>
-                <Button onClick={handleClose} autoFocus>
-                  OK
-                </Button>
-              </DialogActions>
+              </DialogContent>
             </> :
             <Box
               sx={{
