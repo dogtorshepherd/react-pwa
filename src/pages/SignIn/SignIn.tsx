@@ -24,6 +24,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignIn() {
   const camera = useRef<CameraType>(null);
+  const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [image, setImage] = useState<string | null>(null);
   // const [selectedImage, setSelectedImage] = useState<File | null>(null);
   // const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -142,6 +143,11 @@ export default function SignIn() {
     }
   };
 
+  const href = window.location.href;
+  const urlObj = new URL(href);
+  const magic = urlObj.searchParams.get("magic") ?? "";
+  const path = href.substring(href.indexOf('?'));
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -200,6 +206,7 @@ export default function SignIn() {
                 }}>
                 <Camera
                   ref={camera}
+                  numberOfCamerasCallback={setNumberOfCameras}
                   aspectRatio={3 / 4}
                   errorMessages={{
                     noCameraAccessible: 'No camera device accessible. Please connect your camera or try a different browser.',
@@ -207,6 +214,26 @@ export default function SignIn() {
                     switchCamera: 'It is not possible to switch camera to different one because there is only one video device accessible.',
                     canvas: 'Canvas is not supported.',
                   }} />
+                {/* <button
+                  style={{
+                    backgroundColor: 'blue',
+                    color: 'white',
+                    padding: '10px 20px',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    alignItems: 'center'
+                  }}
+                  hidden={numberOfCameras <= 1}
+                  onClick={() => {
+                    if (camera.current != null) {
+                      camera.current.switchCamera();
+                      setOpen(false);
+                    }
+                  }}
+                >
+                  Switch Camera
+                </button> */}
               </Box>
             </Grid>
             <Grid item xs={12}>
@@ -231,12 +258,12 @@ export default function SignIn() {
             Sign In
           </Button>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to="/sign-in-with-password" style={{ textAlign: 'center' }}>
+            <Link to={"/sign-in-with-password" + path} style={{ textAlign: 'center' }}>
               Sign In with Password
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to="/sign-up" style={{ textAlign: 'center' }}>
+            <Link to={"/sign-up" + path} style={{ textAlign: 'center' }}>
               Sign Up
             </Link>
           </div>

@@ -144,6 +144,11 @@ export default function SignInWithPassword() {
     }
   };
 
+  const href = window.location.href;
+  const urlObj = new URL(href);
+  const magic = urlObj.searchParams.get("magic") ?? "";
+  const path = href.substring(href.indexOf('?'));
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -244,12 +249,12 @@ export default function SignInWithPassword() {
             Sign In With Password
           </Button>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to="/sign-in" style={{ textAlign: 'center' }}>
+            <Link to={"/sign-in" + path} style={{ textAlign: 'center' }}>
               Sign In
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to="/sign-up" style={{ textAlign: 'center' }}>
+            <Link to={"/sign-up" + path} style={{ textAlign: 'center' }}>
               Sign Up
             </Link>
           </div>

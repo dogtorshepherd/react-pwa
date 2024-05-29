@@ -90,11 +90,21 @@ const loginFortinet = async (magic: string, username: string, password: string):
     console.error('fortiError:', fortiError);
   }
 
-  try {
-    const response = await instance.get("/");
-    return true
-  } catch (error) {
-    return false
+  const result = await fetchWithRetry("/");
+  return result
+
+};
+
+const fetchWithRetry = async (url: string, retries = 3, delayMs = 1000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await instance.get(url);
+      return true;
+    } catch (error) {
+      if (i === retries - 1) {
+        return false;
+      }
+    }
   }
 };
 

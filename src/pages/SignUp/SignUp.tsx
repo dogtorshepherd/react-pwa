@@ -129,6 +129,11 @@ export default function SignUp() {
     }
   };
 
+  const href = window.location.href;
+  const urlObj = new URL(href);
+  const magic = urlObj.searchParams.get("magic") ?? "";
+  const path = href.substring(href.indexOf('?'));
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -229,12 +234,12 @@ export default function SignUp() {
             Sign Up
           </Button>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to="/sign-in" style={{ textAlign: 'center' }}>
+            <Link to={"/sign-in" + path} style={{ textAlign: 'center' }}>
               Sign In
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to="/sign-in-with-password" style={{ textAlign: 'center' }}>
+            <Link to={"/sign-in-with-password" + path} style={{ textAlign: 'center' }}>
               Sign In with Password
             </Link>
           </div>
