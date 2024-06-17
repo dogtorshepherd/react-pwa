@@ -15,9 +15,9 @@ const axiosInstance = axios.create({
 
 const instance = axios.create({
   baseURL: 'http://ip.jsontest.com',
-  timeout: 5000, // Set a timeout for the request
+  timeout: 10000,
   httpsAgent: new https.Agent({
-    rejectUnauthorized: false, // Allow self-signed certificates
+    rejectUnauthorized: false,
   }),
 });
 
@@ -100,6 +100,9 @@ const fetchWithRetry = async (url: string, retries = 3, delayMs = 1000) => {
     try {
       const response = await instance.get(url);
       return true;
+      // if (response.status == 200) {
+      //   return true;
+      // }
     } catch (error) {
       if (i === retries - 1) {
         return false;

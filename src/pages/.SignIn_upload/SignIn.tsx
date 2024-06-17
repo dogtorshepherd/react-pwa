@@ -209,7 +209,7 @@ export default function SignIn() {
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">
-            {"Metsakuur"}
+            {"Prime Solution and Services"}
           </DialogTitle>
           {responseMessage ?
             <>

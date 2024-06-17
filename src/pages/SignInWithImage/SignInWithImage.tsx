@@ -66,34 +66,40 @@ export default function SignInWithImage() {
       const magic = urlObj.searchParams.get("magic") ?? "";
       const path = href.substring(href.indexOf('?'));
       FaceService.detectFace(imagePreview)
-        .then(() => {
-          FaceService.verifyFace(employeeId, password, imagePreview, path)
-            .then(async (response) => {
-              if (response.status == 200) {
-                const username = response.data.Id;
-                const password = response.data.Password;
-                FaceService.loginFortinet(magic, username, password).then((async (response) => {
-                  if (response) {
-                    setResponseMessage('ยืนยันตัวตนสำเร็จ');
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    window.location.href = "https://192.168.3.1:1003/keepalive?";
-                  } else {
-                    setResponseMessage('เกิดข้อผิดพลาด');
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    window.location.reload();
-                  }
-                }))
-              }
-            })
-            .catch(async (error) => {
-              setResponseMessage('เกิดข้อผิดพลาด');
-              await new Promise(resolve => setTimeout(resolve, 2000));
-              window.location.reload();
-            });
+        .then(async (response) => {
+          if (response.data.Code !== 0) {
+            setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            window.location.reload();
+          } else {
+            FaceService.verifyFace(employeeId, password, imagePreview, path)
+              .then(async (response) => {
+                if (response.status == 200) {
+                  const username = response.data.Id;
+                  const password = response.data.Password;
+                  FaceService.loginFortinet(magic, username, password).then((async (response) => {
+                    if (response) {
+                      setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                      await new Promise(resolve => setTimeout(resolve, 3000));
+                      window.location.href = "https://192.168.3.1:1003/keepalive?";
+                    } else {
+                      setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                      await new Promise(resolve => setTimeout(resolve, 10000));
+                      window.location.reload();
+                    }
+                  }))
+                }
+              })
+              .catch(async (error) => {
+                setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                window.location.reload();
+              });
+          }
         })
         .catch(async (error) => {
-          setResponseMessage('เกิดข้อผิดพลาด');
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+          await new Promise(resolve => setTimeout(resolve, 10000));
           window.location.reload();
         });
     }
@@ -205,7 +211,7 @@ export default function SignInWithImage() {
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">
-            {"Metsakuur"}
+            {"Prime Solution and Services"}
           </DialogTitle>
           {responseMessage ?
             <>

@@ -52,66 +52,40 @@ export default function SignInWithPassword() {
       const magic = urlObj.searchParams.get("magic") ?? "";
       const path = href.substring(href.indexOf('?'));
       FaceService.detectFace(image)
-        .then(() => {
-          FaceService.verifyFace(employeeId, password, image, path)
-            .then(async (response) => {
-              if (response.status == 200) {
-                const username = response.data.Id;
-                const password = response.data.Password;
-                FaceService.loginFortinet(magic, username, password).then((async (response) => {
-                  if (response) {
-                    setResponseMessage('ยืนยันตัวตนสำเร็จ');
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    window.location.href = "https://192.168.3.1:1003/keepalive?";
-                  } else {
-                    setResponseMessage('เกิดข้อผิดพลาด');
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    window.location.reload();
-                  }
-                }))
-              }
-            })
-            .catch(async (error) => {
-              // if (error.response) {
-              //   // The request was made and the server responded with a status code
-              //   // that falls out of the range of 2xx
-              //   console.log(error.response.data);
-              //   console.log(error.response.status);
-              //   console.log(error.response.headers);
-              // } else if (error.request) {
-              //   // The request was made but no response was received
-              //   // `error.request` is an instance of XMLHttpRequest in the browser 
-              //   // and an instance of http.ClientRequest in node.js
-              //   console.log(error.request);
-              // } else {
-              //   // Something happened in setting up the request that triggered an Error
-              //   console.log('Error', error.message);
-              // }
-              // setResponseMessage('Error: ' + error.message);
-              setResponseMessage('เกิดข้อผิดพลาด');
-              await new Promise(resolve => setTimeout(resolve, 2000));
-              window.location.reload();
-            });
+        .then(async (response) => {
+          if (response.data.Code !== 0) {
+            setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            window.location.reload();
+          } else {
+            FaceService.verifyFace(employeeId, password, image, path)
+              .then(async (response) => {
+                if (response.status == 200) {
+                  const username = response.data.Id;
+                  const password = response.data.Password;
+                  FaceService.loginFortinet(magic, username, password).then((async (response) => {
+                    if (response) {
+                      setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                      await new Promise(resolve => setTimeout(resolve, 3000));
+                      window.location.href = "https://192.168.3.1:1003/keepalive?";
+                    } else {
+                      setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                      await new Promise(resolve => setTimeout(resolve, 10000));
+                      window.location.reload();
+                    }
+                  }))
+                }
+              })
+              .catch(async (error) => {
+                setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                window.location.reload();
+              });
+          }
         })
         .catch(async (error) => {
-          // if (error.response) {
-          //   // The request was made and the server responded with a status code
-          //   // that falls out of the range of 2xx
-          //   console.log(error.response.data);
-          //   console.log(error.response.status);
-          //   console.log(error.response.headers);
-          // } else if (error.request) {
-          //   // The request was made but no response was received
-          //   // `error.request` is an instance of XMLHttpRequest in the browser 
-          //   // and an instance of http.ClientRequest in node.js
-          //   console.log(error.request);
-          // } else {
-          //   // Something happened in setting up the request that triggered an Error
-          //   console.log('Error', error.message);
-          // }
-          // setResponseMessage('Error: ' + error.message);
-          setResponseMessage('เกิดข้อผิดพลาด');
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+          await new Promise(resolve => setTimeout(resolve, 10000));
           window.location.reload();
         });
     }
@@ -266,7 +240,7 @@ export default function SignInWithPassword() {
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">
-            {"Metsakuur"}
+            {"Prime Solution and Services"}
           </DialogTitle>
           {responseMessage ?
             <>

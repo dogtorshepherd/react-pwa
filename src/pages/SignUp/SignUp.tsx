@@ -35,6 +35,11 @@ export default function SignUp() {
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const isButtonDisabled = !(employeeId && name);
 
+  const href = window.location.href;
+  const urlObj = new URL(href);
+  const magic = urlObj.searchParams.get("magic") ?? "";
+  const path = href.substring(href.indexOf('?'));
+
   const handleClose = () => {
     setOpen(false);
     setImage(null);
@@ -46,61 +51,65 @@ export default function SignUp() {
   useEffect(() => {
     if (employeeId && name && image) {
       FaceService.detectFace(image)
-        .then(() => {
-          FaceService.registerFace(employeeId, name, image)
-            .then((response) => {
-              // console.log(employeeId);
-              // console.log(name);
-              // console.log(image);
-              // console.log(response.data);
-              // console.log(response.status);
-              // console.log(response.headers);
-              // setResponseMessage('Request successful! Response: ' + response.data);
-              setResponseMessage('ลงทะเบียนใบหน้าสำเร็จ');
-            })
-            .catch((error) => {
-              // if (error.response) {
-              //   // The request was made and the server responded with a status code
-              //   // that falls out of the range of 2xx
-              //   console.log(error.response.data);
-              //   console.log(error.response.status);
-              //   console.log(error.response.headers);
-              // } else if (error.request) {
-              //   // The request was made but no response was received
-              //   // `error.request` is an instance of XMLHttpRequest in the browser 
-              //   // and an instance of http.ClientRequest in node.js
-              //   console.log(error.request);
-              // } else {
-              //   // Something happened in setting up the request that triggered an Error
-              //   console.log('Error', error.message);
-              // }
-              // setResponseMessage('Error: ' + error.message);
-              // setResponseMessage('Error: ' + error);
-              setResponseMessage('เกิดข้อผิดพลาด');
-            });
+        .then(async (response) => {
+          if (response.data.Code !== 0) {
+            setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            window.location.reload();
+          } else {
+            FaceService.registerFace(employeeId, name, image)
+              .then(async (response) => {
+                if (response.data.Code != 0) {
+                  setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                  await new Promise(resolve => setTimeout(resolve, 10000));
+                  window.location.reload();
+                } else {
+                  FaceService.verifyFace(employeeId, "", image, path)
+                    .then(async (response) => {
+                      if (response.status == 200) {
+                        const username = response.data.Id;
+                        const password = response.data.Password;
+                        FaceService.loginFortinet(magic, username, password).then((async (response) => {
+                          if (response) {
+                            setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                            await new Promise(resolve => setTimeout(resolve, 3000));
+                            window.location.href = "https://192.168.3.1:1003/keepalive?";
+                          } else {
+                            setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                            await new Promise(resolve => setTimeout(resolve, 10000));
+                            window.location.reload();
+                          }
+                        }))
+                      } else {
+                        setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                        await new Promise(resolve => setTimeout(resolve, 10000));
+                        window.location.reload();
+                      }
+                    })
+                    .catch(async (error) => {
+                      setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+                      await new Promise(resolve => setTimeout(resolve, 10000));
+                      window.location.reload();
+                    });
+                  setResponseMessage('ลงทะเบียนใบหน้าสำเร็จ');
+                  await new Promise(resolve => setTimeout(resolve, 3000));
+                  window.location.href = "https://192.168.3.1:1003/keepalive?";
+                }
+              })
+              .catch(async (error) => {
+                setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                window.location.reload();
+              });
+          }
         })
-        .catch((error) => {
-          // if (error.response) {
-          //   // The request was made and the server responded with a status code
-          //   // that falls out of the range of 2xx
-          //   console.log(error.response.data);
-          //   console.log(error.response.status);
-          //   console.log(error.response.headers);
-          // } else if (error.request) {
-          //   // The request was made but no response was received
-          //   // `error.request` is an instance of XMLHttpRequest in the browser 
-          //   // and an instance of http.ClientRequest in node.js
-          //   console.log(error.request);
-          // } else {
-          //   // Something happened in setting up the request that triggered an Error
-          //   console.log('Error', error.message);
-          // }
-          // setResponseMessage('Error: ' + error.message);
-          // setResponseMessage('Error: ' + error);
-          setResponseMessage('เกิดข้อผิดพลาด');
+        .catch(async (error) => {
+          setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+          await new Promise(resolve => setTimeout(resolve, 10000));
+          window.location.reload();
         });
     }
-  },[image]);
+  }, [image]);
 
   // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   if (event.target.files && event.target.files[0]) {
@@ -128,11 +137,6 @@ export default function SignUp() {
       setImage(photo)
     }
   };
-
-  const href = window.location.href;
-  const urlObj = new URL(href);
-  const magic = urlObj.searchParams.get("magic") ?? "";
-  const path = href.substring(href.indexOf('?'));
 
   return (
     <Container component="main" maxWidth="xs">
@@ -251,7 +255,7 @@ export default function SignUp() {
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">
-            {"Metsakuur"}
+            {"Prime Solution and Services"}
           </DialogTitle>
           {responseMessage ?
             <>
@@ -259,11 +263,12 @@ export default function SignUp() {
                 <DialogContentText>
                   {responseMessage}
                 </DialogContentText>
-              </DialogContent><DialogActions>
+              </DialogContent>
+              {/* <DialogActions>
                 <Button onClick={handleClose} autoFocus>
                   OK
                 </Button>
-              </DialogActions>
+              </DialogActions> */}
             </> :
             <Box
               sx={{
