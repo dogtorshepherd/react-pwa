@@ -66,6 +66,7 @@ export default function SignIn() {
                     if (response) {
                       setResponseMessage('ยืนยันตัวตนสำเร็จ');
                       await new Promise(resolve => setTimeout(resolve, 3000));
+                      window.open("https://www.google.com/", "_blank");
                       window.location.href = "https://192.168.3.1:1003/keepalive?";
                     } else {
                       setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
