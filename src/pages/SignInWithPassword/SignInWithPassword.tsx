@@ -20,7 +20,7 @@ import { useTheme } from '@mui/material/styles';
 import type { DialogProps } from "@mui/material";
 import axios from 'axios';
 import Loading from '@/components/Loading';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignInWithPassword() {
   const camera = useRef<CameraType>(null);
@@ -47,7 +47,12 @@ export default function SignInWithPassword() {
 
   useEffect(() => {
     if (employeeId && password && image) {
+      const href = window.location.href;
+      const urlObj = new URL(href);
+      const magic = urlObj.searchParams.get("magic") ?? "";
+      const path = href.substring(href.indexOf('?'));
       FaceService.detectFace(image)
+<<<<<<< HEAD
         .then(() => {
           FaceService.verifyFace(employeeId, password, image)
             .then(async (response) => {
@@ -73,56 +78,44 @@ export default function SignInWithPassword() {
 
                 if (!response.ok) {
                   throw new Error("Network response was not ok");
+=======
+        .then(async (response) => {
+          if (response.data.Code !== 0) {
+            setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            window.location.reload();
+          } else {
+            FaceService.verifyFace(employeeId, password, image, path)
+              .then(async (response) => {
+                if (response.status == 200) {
+                  const username = response.data.Id;
+                  const password = response.data.Password;
+                  FaceService.loginFortinet(magic, username, password).then((async (response) => {
+                    if (response) {
+                      setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                      await new Promise(resolve => setTimeout(resolve, 3000));
+                      window.open("https://192.168.3.1:1003/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
+                      window.location.href = "https://www.google.com/";
+                    } else {
+                      setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                      await new Promise(resolve => setTimeout(resolve, 10000));
+                      window.location.reload();
+                    }
+                  }))
+>>>>>>> from_no_internet
                 }
-
-                const responseData = await response.json();
-                // Do something with the response data
-                console.log(responseData);
-              } catch (error) {
-                // Handle errors
-                console.error("Error:", error);
-              }
-              // window.location.href = "https://www.youtube.com/";
-              setResponseMessage('ยืนยันตัวตนสำเร็จ');
-            })
-            .catch((error) => {
-              // if (error.response) {
-              //   // The request was made and the server responded with a status code
-              //   // that falls out of the range of 2xx
-              //   console.log(error.response.data);
-              //   console.log(error.response.status);
-              //   console.log(error.response.headers);
-              // } else if (error.request) {
-              //   // The request was made but no response was received
-              //   // `error.request` is an instance of XMLHttpRequest in the browser 
-              //   // and an instance of http.ClientRequest in node.js
-              //   console.log(error.request);
-              // } else {
-              //   // Something happened in setting up the request that triggered an Error
-              //   console.log('Error', error.message);
-              // }
-              // setResponseMessage('Error: ' + error.message);
-              setResponseMessage('เกิดข้อผิดพลาด');
-            });
+              })
+              .catch(async (error) => {
+                setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                window.location.reload();
+              });
+          }
         })
-        .catch((error) => {
-          // if (error.response) {
-          //   // The request was made and the server responded with a status code
-          //   // that falls out of the range of 2xx
-          //   console.log(error.response.data);
-          //   console.log(error.response.status);
-          //   console.log(error.response.headers);
-          // } else if (error.request) {
-          //   // The request was made but no response was received
-          //   // `error.request` is an instance of XMLHttpRequest in the browser 
-          //   // and an instance of http.ClientRequest in node.js
-          //   console.log(error.request);
-          // } else {
-          //   // Something happened in setting up the request that triggered an Error
-          //   console.log('Error', error.message);
-          // }
-          // setResponseMessage('Error: ' + error.message);
-          setResponseMessage('เกิดข้อผิดพลาด');
+        .catch(async (error) => {
+          setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+          await new Promise(resolve => setTimeout(resolve, 10000));
+          window.location.reload();
         });
     }
   }, [image]);
@@ -153,6 +146,11 @@ export default function SignInWithPassword() {
       setImage(photo)
     }
   };
+
+  const href = window.location.href;
+  const urlObj = new URL(href);
+  const magic = urlObj.searchParams.get("magic") ?? "";
+  const path = href.substring(href.indexOf('?'));
 
   return (
     <Container component="main" maxWidth="xs">
@@ -254,12 +252,12 @@ export default function SignInWithPassword() {
             Sign In With Password
           </Button>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to="/sign-in" style={{ textAlign: 'center' }}>
+            <Link to={"/sign-in" + path} style={{ textAlign: 'center' }}>
               Sign In
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to="/sign-up" style={{ textAlign: 'center' }}>
+            <Link to={"/sign-up" + path} style={{ textAlign: 'center' }}>
               Sign Up
             </Link>
           </div>
@@ -271,7 +269,7 @@ export default function SignInWithPassword() {
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">
-            {"Metsakuur"}
+            {"Prime Solution and Services"}
           </DialogTitle>
           {responseMessage ?
             <>
@@ -279,11 +277,7 @@ export default function SignInWithPassword() {
                 <DialogContentText>
                   {responseMessage}
                 </DialogContentText>
-              </DialogContent><DialogActions>
-                <Button onClick={handleClose} autoFocus>
-                  OK
-                </Button>
-              </DialogActions>
+              </DialogContent>
             </> :
             <Box
               sx={{

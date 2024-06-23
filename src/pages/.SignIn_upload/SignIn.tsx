@@ -6,14 +6,9 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-<<<<<<< HEAD
 // import { Camera, CameraType } from '@/components/Camera';
 import { useRef, useState } from 'react';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-=======
-import { Camera, CameraType } from '@/components/Camera';
-import { useEffect, useRef, useState } from 'react';
->>>>>>> from_no_internet
 import FaceService from '@/services/FaceService';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -22,16 +17,10 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-<<<<<<< HEAD
 import type { DialogProps } from "@mui/material";
 import axios from 'axios';
 import Loading from '@/components/Loading';
 import { useLocation } from 'react-router-dom';
-=======
-import Loading from '@/components/Loading';
-import { Link, useNavigate } from 'react-router-dom';
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
->>>>>>> from_no_internet
 
 export default function SignInWithImage() {
   // const camera = useRef<CameraType>(null);
@@ -41,7 +30,6 @@ export default function SignInWithImage() {
   const [open, setOpen] = React.useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
   const [employeeId, setEmployeeId] = useState<string>('');
-<<<<<<< HEAD
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const isButtonDisabled = !(employeeId && imagePreview);
@@ -60,13 +48,6 @@ export default function SignInWithImage() {
   //     });
   //   setOpen(true);
   // };
-=======
-  const [password, setPassword] = useState<string>('');
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-  const isButtonDisabled = !(employeeId && password);
-  const navigate = useNavigate();
->>>>>>> from_no_internet
 
   const handleClose = () => {
     setOpen(false);
@@ -74,10 +55,6 @@ export default function SignInWithImage() {
     setImagePreview(null);
     setResponseMessage(null);
     setEmployeeId('');
-<<<<<<< HEAD
-=======
-    setPassword('');
->>>>>>> from_no_internet
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,7 +73,6 @@ export default function SignInWithImage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-<<<<<<< HEAD
     // await updateImageState();
     setOpen(true);
     if (employeeId && imagePreview) {
@@ -162,59 +138,6 @@ export default function SignInWithImage() {
   //     setImage(photo)
   //   }
   // };
-=======
-    setOpen(true);
-    if (employeeId && password && imagePreview) {
-      const href = window.location.href;
-      const urlObj = new URL(href);
-      const magic = urlObj.searchParams.get("magic") ?? "";
-      const path = href.substring(href.indexOf('?'));
-      FaceService.detectFace(imagePreview)
-        .then(async (response) => {
-          if (response.data.Code !== 0) {
-            setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
-            await new Promise(resolve => setTimeout(resolve, 10000));
-            window.location.reload();
-          } else {
-            FaceService.verifyFace(employeeId, password, imagePreview, path)
-              .then(async (response) => {
-                if (response.status == 200) {
-                  const username = response.data.Id;
-                  const password = response.data.Password;
-                  FaceService.loginFortinet(magic, username, password).then((async (response) => {
-                    if (response) {
-                      setResponseMessage('ยืนยันตัวตนสำเร็จ');
-                      await new Promise(resolve => setTimeout(resolve, 3000));
-                      window.open("https://192.168.3.1:1003/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
-                      window.location.href = "https://www.google.com/";
-                    } else {
-                      setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
-                      await new Promise(resolve => setTimeout(resolve, 10000));
-                      window.location.reload();
-                    }
-                  }))
-                }
-              })
-              .catch(async (error) => {
-                setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
-                await new Promise(resolve => setTimeout(resolve, 10000));
-                window.location.reload();
-              });
-          }
-        })
-        .catch(async (error) => {
-          setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
-          await new Promise(resolve => setTimeout(resolve, 10000));
-          window.location.reload();
-        });
-    }
-  };
-
-  const href = window.location.href;
-  const urlObj = new URL(href);
-  const magic = urlObj.searchParams.get("magic") ?? "";
-  const path = href.substring(href.indexOf('?'));
->>>>>>> from_no_internet
 
   return (
     <Container component="main" maxWidth="xs">
@@ -231,11 +154,7 @@ export default function SignInWithImage() {
             <LockOutlinedIcon />
           </Avatar> */}
         <Typography component="h1" variant="h5">
-<<<<<<< HEAD
           Sign In
-=======
-          Sign In With Password
->>>>>>> from_no_internet
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
@@ -270,7 +189,6 @@ export default function SignInWithImage() {
                   </Button>
                 </label>
               </Box>
-<<<<<<< HEAD
               {/* <Box
                 sx={{
                   maxWidth: 200,
@@ -287,8 +205,6 @@ export default function SignInWithImage() {
                     canvas: 'Canvas is not supported.',
                   }} />
               </Box> */}
-=======
->>>>>>> from_no_internet
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -301,20 +217,6 @@ export default function SignInWithImage() {
                 onChange={(e) => setEmployeeId(e.target.value)}
               />
             </Grid>
-<<<<<<< HEAD
-=======
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="password"
-                label="Password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Grid>
->>>>>>> from_no_internet
           </Grid>
           <Button
             disabled={isButtonDisabled}
@@ -323,7 +225,6 @@ export default function SignInWithImage() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-<<<<<<< HEAD
             Sign In
           </Button>
           <button onClick={handleLogout}>
@@ -332,23 +233,6 @@ export default function SignInWithImage() {
         </Box>
         <Dialog
           fullScreen={fullScreen}
-=======
-            Sign In With Password
-          </Button>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to={"/sign-in" + path} style={{ textAlign: 'center' }}>
-              Sign In
-            </Link>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to={"/sign-up" + path} style={{ textAlign: 'center' }}>
-              Sign Up
-            </Link>
-          </div>
-        </Box>
-        <Dialog
-          // fullScreen={fullScreen}
->>>>>>> from_no_internet
           open={open}
           // onClose={handleClose}
           aria-labelledby="responsive-dialog-title"
@@ -362,15 +246,11 @@ export default function SignInWithImage() {
                 <DialogContentText>
                   {responseMessage}
                 </DialogContentText>
-<<<<<<< HEAD
               </DialogContent><DialogActions>
                 <Button onClick={handleClose} autoFocus>
                   OK
                 </Button>
               </DialogActions>
-=======
-              </DialogContent>
->>>>>>> from_no_internet
             </> :
             <Box
               sx={{
