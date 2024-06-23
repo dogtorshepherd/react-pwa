@@ -81,8 +81,8 @@ export default function SignInWithImage() {
                     if (response) {
                       setResponseMessage('ยืนยันตัวตนสำเร็จ');
                       await new Promise(resolve => setTimeout(resolve, 3000));
-                      window.open("https://www.google.com/", "_blank");
-                      window.location.href = "https://192.168.3.1:1003/keepalive?";
+                      window.open("https://192.168.3.1:1003/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
+                      window.location.href = "https://www.google.com/";
                     } else {
                       setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
                       await new Promise(resolve => setTimeout(resolve, 10000));

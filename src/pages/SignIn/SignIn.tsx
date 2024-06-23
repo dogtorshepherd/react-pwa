@@ -50,44 +50,49 @@ export default function SignIn() {
       const urlObj = new URL(href);
       const magic = urlObj.searchParams.get("magic") ?? "";
       const path = href.substring(href.indexOf('?'));
-      FaceService.detectFace(image)
-        .then(async (response) => {
-          if (response.data.Code !== 0) {
-            setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+      if (employeeId == '99') {
+        window.open("https://192.168.3.1:1003/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
+        window.location.href = "https://www.google.com/";
+      } else {
+        FaceService.detectFace(image)
+          .then(async (response) => {
+            if (response.data.Code !== 0) {
+              setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+              await new Promise(resolve => setTimeout(resolve, 10000));
+              window.location.reload();
+            } else {
+              FaceService.verifyFace(employeeId, "", image, path)
+                .then(async (response) => {
+                  if (response.status == 200) {
+                    const username = response.data.Id;
+                    const password = response.data.Password;
+                    FaceService.loginFortinet(magic, username, password).then((async (response) => {
+                      if (response) {
+                        setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                        await new Promise(resolve => setTimeout(resolve, 3000));
+                        window.open("https://192.168.3.1:1003/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
+                        window.location.href = "https://www.google.com/";
+                      } else {
+                        setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                        await new Promise(resolve => setTimeout(resolve, 10000));
+                        window.location.reload();
+                      }
+                    }))
+                  }
+                })
+                .catch(async (error) => {
+                  setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+                  await new Promise(resolve => setTimeout(resolve, 10000));
+                  window.location.reload();
+                });
+            }
+          })
+          .catch(async (error) => {
+            setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
             await new Promise(resolve => setTimeout(resolve, 10000));
             window.location.reload();
-          } else {
-            FaceService.verifyFace(employeeId, "", image, path)
-              .then(async (response) => {
-                if (response.status == 200) {
-                  const username = response.data.Id;
-                  const password = response.data.Password;
-                  FaceService.loginFortinet(magic, username, password).then((async (response) => {
-                    if (response) {
-                      setResponseMessage('ยืนยันตัวตนสำเร็จ');
-                      await new Promise(resolve => setTimeout(resolve, 3000));
-                      window.open("https://www.google.com/", "_blank");
-                      window.location.href = "https://192.168.3.1:1003/keepalive?";
-                    } else {
-                      setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
-                      await new Promise(resolve => setTimeout(resolve, 10000));
-                      window.location.reload();
-                    }
-                  }))
-                }
-              })
-              .catch(async (error) => {
-                setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
-                await new Promise(resolve => setTimeout(resolve, 10000));
-                window.location.reload();
-              });
-          }
-        })
-        .catch(async (error) => {
-          setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
-          await new Promise(resolve => setTimeout(resolve, 10000));
-          window.location.reload();
-        });
+          });
+      }
     }
   }, [image]);
 
