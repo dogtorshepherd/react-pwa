@@ -1,6 +1,6 @@
-import http from "../http-common";
 import axios from 'axios';
 import https from 'https';
+import http from "../http-common";
 
 const axiosInstance = axios.create({
   baseURL: 'https://192.168.3.1:1003',

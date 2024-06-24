@@ -1,9 +1,7 @@
 import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
 import { CenteredFlexBox, FullSizeCenteredFlexBox } from '@/components/styled';
-import { giphy404, messages } from '@/config';
 
 function NotFound() {
   return (

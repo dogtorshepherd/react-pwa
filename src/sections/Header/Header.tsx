@@ -1,29 +1,24 @@
-import GitHubIcon from '@mui/icons-material/GitHub';
-import ThemeIcon from '@mui/icons-material/InvertColors';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 
 import { FlexBox } from '@/components/styled';
-import { repository, title } from '@/config';
+import { title } from '@/config';
 import useHotKeysDialog from '@/store/hotkeys';
 import useNotifications from '@/store/notifications';
 import useSidebar from '@/store/sidebar';
 import useTheme from '@/store/theme';
 
-import { HotKeysButton } from './styled';
-import { getRandomJoke } from './utils';
-import routes from '@/routes';
-import { Link } from 'react-router-dom';
 import { DarkMode, LightMode } from '@mui/icons-material';
 import { useColorScheme as useJoyColorScheme } from '@mui/joy/styles';
 import { useColorScheme as useMaterialColorScheme } from '@mui/material/styles';
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { getRandomJoke } from './utils';
 
 function Header() {
   const [, sidebarActions] = useSidebar();

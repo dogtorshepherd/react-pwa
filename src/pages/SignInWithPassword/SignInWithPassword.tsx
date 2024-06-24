@@ -1,25 +1,22 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import { Camera, CameraType } from '@/components/Camera';
-import { useEffect, useRef, useState } from 'react';
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Loading from '@/components/Loading';
 import FaceService from '@/services/FaceService';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import type { DialogProps } from "@mui/material";
-import axios from 'axios';
-import Loading from '@/components/Loading';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignInWithPassword() {
@@ -67,8 +64,13 @@ export default function SignInWithPassword() {
                     if (response) {
                       setResponseMessage('ยืนยันตัวตนสำเร็จ');
                       await new Promise(resolve => setTimeout(resolve, 3000));
-                      window.open("https://192.168.3.1:1003/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
-                      window.location.href = "https://www.google.com/";
+                      if (isMobile) {
+                        window.open("https://www.google.com/", "_blank");
+                        window.location.href = "https://192.168.3.1:1003/keepalive?";
+                      } else {
+                        window.open("https://192.168.3.1:1003/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
+                        window.location.href = "https://www.google.com/";
+                      }
                     } else {
                       setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
                       await new Promise(resolve => setTimeout(resolve, 10000));
