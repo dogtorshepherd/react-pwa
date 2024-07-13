@@ -14,7 +14,7 @@ const axiosInstance = axios.create({
 });
 
 const instance = axios.create({
-  baseURL: 'http://ip.jsontest.com',
+  baseURL: 'http://www.http2demo.io',
   timeout: 10000,
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
@@ -95,6 +95,26 @@ const loginFortinet = async (magic: string, username: string, password: string):
 
 };
 
+const loginFortinetWithPassword = async (magic: string, username: string, password: string): Promise<any> => {
+  try {
+    const fortiResult = await axios.post(
+      'https://192.168.31.1:1003/fgtauth',
+      new URLSearchParams({
+        magic: magic,
+        username: username,
+        password: password,
+      })
+    );
+    console.log('fortiResult:', fortiResult)
+  } catch (fortiError) {
+    console.error('fortiError:', fortiError);
+  }
+
+  const result = await fetchWithRetry("/");
+  return result
+
+};
+
 const fetchWithRetry = async (url: string, retries = 3, delayMs = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
@@ -121,6 +141,7 @@ const FaceService = {
   detectFace,
   verifyFace,
   loginFortinet,
+  loginFortinetWithPassword,
   logoutFortinet,
 };
 

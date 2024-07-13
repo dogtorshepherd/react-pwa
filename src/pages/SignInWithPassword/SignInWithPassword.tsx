@@ -60,7 +60,7 @@ export default function SignInWithPassword() {
                 if (response.status == 200) {
                   const username = response.data.Id;
                   const password = response.data.Password;
-                  FaceService.loginFortinet(magic, username, password).then((async (response) => {
+                  FaceService.loginFortinetWithPassword(magic, username, password).then((async (response) => {
                     if (response) {
                       setResponseMessage('ยืนยันตัวตนสำเร็จ');
                       await new Promise(resolve => setTimeout(resolve, 3000));
