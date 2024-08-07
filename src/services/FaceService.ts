@@ -14,7 +14,10 @@ const axiosInstance = axios.create({
 });
 
 const instance = axios.create({
+  // baseURL: 'https://cors-anywhere.herokuapp.com',
   baseURL: 'http://www.http2demo.io',
+  // baseURL: 'http://ip.jsontest.com',
+  // baseURL: 'https://www.google.com',
   timeout: 10000,
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
@@ -115,18 +118,44 @@ const loginFortinetWithPassword = async (magic: string, username: string, passwo
 
 };
 
+// const fetchWithRetry = async (url: string, retries = 3, delayMs = 1000) => {
+//   for (let i = 0; i < retries; i++) {
+//     console.log(retries)
+//     try {
+//       const response = await instance.get(url);
+//       return true;
+//       // if (response.status == 200) {
+//       //   return true;
+//       // }
+//     } catch (error) {
+//       if (i === retries - 1) {
+//         console.log('ลองครบ 3 ครั้ง')
+//         return false;
+//       } else {
+//         console.log('ลองใหม่')
+//       }
+//     }
+//   }
+// };
+
 const fetchWithRetry = async (url: string, retries = 3, delayMs = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
       const response = await instance.get(url);
-      return true;
-      // if (response.status == 200) {
-      //   return true;
-      // }
+      if (response.status === 200) {
+        return true;
+      }
     } catch (error) {
       if (i === retries - 1) {
+        // console.log('Tried 3 times');
         return false;
+      } else {
+        // console.log('Retrying');
+        await new Promise(res => setTimeout(res, delayMs));
       }
+    } finally {
+      // console.log('finally');
+      return false;
     }
   }
 };

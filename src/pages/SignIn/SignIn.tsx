@@ -63,13 +63,18 @@ export default function SignIn() {
               await new Promise(resolve => setTimeout(resolve, 10000));
               window.location.reload();
             } else {
+              console.log('Detect Face : PASS');
               FaceService.verifyFace(employeeId, "", image, path)
                 .then(async (response) => {
                   if (response.status == 200) {
                     const username = response.data.Id;
                     const password = response.data.Password;
+                    console.log('Verify Face : PASS');
                     FaceService.loginFortinet(magic, username, password).then((async (response) => {
+                      // console.log('loginFortinet')
+                      // console.log(response)
                       if (response) {
+                        console.log('Login Fortinet : PASS');
                         setResponseMessage('ยืนยันตัวตนสำเร็จ');
                         await new Promise(resolve => setTimeout(resolve, 3000));
                         if (isMobile) {
@@ -80,14 +85,23 @@ export default function SignIn() {
                           window.location.href = "https://www.google.com/";
                         }
                       } else {
+                        // console.log('else')
+                        console.log('Login Fortinet : FAIL');
                         setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
                         await new Promise(resolve => setTimeout(resolve, 10000));
                         window.location.reload();
                       }
-                    }))
+                    })).catch(async () => {
+                      // console.log('catch')
+                      console.log('Login Fortinet : FAIL');
+                      setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                      await new Promise(resolve => setTimeout(resolve, 10000));
+                      window.location.reload();
+                    })
                   }
                 })
                 .catch(async (error) => {
+                  console.log('Verify Face : FAIL');
                   setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
                   await new Promise(resolve => setTimeout(resolve, 10000));
                   window.location.reload();
@@ -95,6 +109,7 @@ export default function SignIn() {
             }
           })
           .catch(async (error) => {
+            console.log('Detect Face : FAIL');
             setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
             await new Promise(resolve => setTimeout(resolve, 10000));
             window.location.reload();
