@@ -2,11 +2,24 @@ import axios from 'axios';
 import https from 'https';
 import http from "../http-common";
 
-const axiosInstance = axios.create({
+const axiosInstanceNoPass = axios.create({
   baseURL: 'https://192.168.3.1:1003',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
-    // Add other headers here
+    // "Access-Control-Allow-Origin": "*",
+    // "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+  },
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false
+  })
+});
+
+const axiosInstanceWithPass = axios.create({
+  baseURL: 'https://192.168.31.1:1003',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    // "Access-Control-Allow-Origin": "*",
+    // "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
   },
   httpsAgent: new https.Agent({
     rejectUnauthorized: false
@@ -15,9 +28,10 @@ const axiosInstance = axios.create({
 
 const instance = axios.create({
   // baseURL: 'https://cors-anywhere.herokuapp.com',
+  // baseURL: 'https://www.youtube.com',
+  // baseURL: 'https://www.google.com',
   baseURL: 'http://www.http2demo.io',
   // baseURL: 'http://ip.jsontest.com',
-  // baseURL: 'https://www.google.com',
   timeout: 10000,
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
@@ -80,7 +94,7 @@ const verifyFace = (employeeId: string, password: string, image: string, path: s
 
 const loginFortinet = async (magic: string, username: string, password: string): Promise<any> => {
   try {
-    const fortiResult = await axios.post(
+    const fortiResult = await axiosInstanceNoPass.post(
       'https://192.168.3.1:1003/fgtauth',
       new URLSearchParams({
         magic: magic,
@@ -100,7 +114,7 @@ const loginFortinet = async (magic: string, username: string, password: string):
 
 const loginFortinetWithPassword = async (magic: string, username: string, password: string): Promise<any> => {
   try {
-    const fortiResult = await axios.post(
+    const fortiResult = await axiosInstanceWithPass.post(
       'https://192.168.31.1:1003/fgtauth',
       new URLSearchParams({
         magic: magic,

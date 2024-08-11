@@ -9,6 +9,7 @@ enum Pages {
   SignIn,
   SignInWithPassword,
   SignInWithImage,
+  Form,
   Welcome,
 }
 

@@ -72,11 +72,19 @@ export default function SignInWithPassword() {
                         window.location.href = "https://www.google.com/";
                       }
                     } else {
+                      // console.log('else')
+                      console.log('fgtauth : FAIL');
                       setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
-                      await new Promise(resolve => setTimeout(resolve, 10000));
-                      window.location.reload();
+                      // await new Promise(resolve => setTimeout(resolve, 10000));
+                      // window.location.reload();
                     }
-                  }))
+                  })).catch(async () => {
+                    // console.log('catch')
+                    console.log('Login Fortinet : FAIL');
+                    setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                    // await new Promise(resolve => setTimeout(resolve, 10000));
+                    // window.location.reload();
+                  })
                 }
               })
               .catch(async (error) => {
@@ -233,6 +241,11 @@ export default function SignInWithPassword() {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Link to={"/sign-up" + path} style={{ textAlign: 'center' }}>
               Sign Up
+            </Link>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Link to={"https://192.168.31.1:1003/logout?"} style={{ textAlign: 'center' }}>
+              Logout
             </Link>
           </div>
         </Box>

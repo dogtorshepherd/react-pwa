@@ -65,6 +65,12 @@ const routes: Routes = {
     title: 'SignInWithImage',
     icon: LoginIcon,
   },
+  [Pages.Form]: {
+    component: asyncComponentLoader(() => import('@/pages/Form')),
+    path: '/form',
+    title: 'Form',
+    icon: LoginIcon,
+  },
 };
 
 export default routes;

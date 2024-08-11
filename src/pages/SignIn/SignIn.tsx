@@ -86,17 +86,17 @@ export default function SignIn() {
                         }
                       } else {
                         // console.log('else')
-                        console.log('Login Fortinet : FAIL');
+                        console.log('fgtauth : FAIL');
                         setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
-                        await new Promise(resolve => setTimeout(resolve, 10000));
-                        window.location.reload();
+                        // await new Promise(resolve => setTimeout(resolve, 10000));
+                        // window.location.reload();
                       }
                     })).catch(async () => {
                       // console.log('catch')
                       console.log('Login Fortinet : FAIL');
                       setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
-                      await new Promise(resolve => setTimeout(resolve, 10000));
-                      window.location.reload();
+                      // await new Promise(resolve => setTimeout(resolve, 10000));
+                      // window.location.reload();
                     })
                   }
                 })
@@ -267,6 +267,11 @@ export default function SignIn() {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Link to={"/sign-up" + path} style={{ textAlign: 'center' }}>
               Sign Up
+            </Link>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Link to={"https://192.168.3.1:1003/logout?"} style={{ textAlign: 'center' }}>
+              Logout
             </Link>
           </div>
         </Box>
