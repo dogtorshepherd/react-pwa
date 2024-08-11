@@ -89,7 +89,7 @@ const verifyFace = (employeeId: string, password: string, image: string, path: s
 //   formData.append("magic", magic);
 //   formData.append("username", username);
 //   formData.append("password", password);
-//   return http.post("https://192.168.3.1:1003/fgtauth", formData);
+//   return http.post("https://192.168.3.1/fgtauth", formData);
 // };
 
 const loginFortinet = async (magic: string, username: string, password: string): Promise<any> => {
@@ -175,7 +175,7 @@ const fetchWithRetry = async (url: string, retries = 3, delayMs = 1000) => {
 };
 
 const logoutFortinet = (): Promise<any> => {
-  return http.get("https://192.168.3.1:1003/logout?");
+  return http.get("https://192.168.3.1/logout?");
 };
 
 const FaceService = {
