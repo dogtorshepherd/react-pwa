@@ -32,53 +32,84 @@ const Form: React.FC = () => {
       const href = window.location.href;
       const urlObj = new URL(href);
       const magic = urlObj.searchParams.get("magic") ?? "";
-      FaceService.loginFortinetWithPassword(magic, employeeId, password)
-        .then(async (loginResponse) => {
-          if (loginResponse) {
-            setResponseMessage('ยืนยันตัวตนสำเร็จ');
-            await new Promise(resolve => setTimeout(resolve, 3000));
+      const form = document.createElement('form');
+      form.method = 'post';
+      form.action = 'https://192.168.31.1:1000/fgtauth';
 
-            // Create and submit a hidden form programmatically
-            const form = document.createElement('form');
-            form.method = 'post';
-            form.action = 'https://192.168.31.1:1000/keepalive?';
+      const nameField = document.createElement('input');
+      nameField.type = 'hidden';
+      nameField.name = 'username';
+      nameField.value = employeeId;
 
-            const nameField = document.createElement('input');
-            nameField.type = 'hidden';
-            nameField.name = 'username';
-            nameField.value = employeeId;
+      const passwordField = document.createElement('input');
+      passwordField.type = 'hidden';
+      passwordField.name = 'password';
+      passwordField.value = password;
 
-            const passwordField = document.createElement('input');
-            passwordField.type = 'hidden';
-            passwordField.name = 'password';
-            passwordField.value = password;
+      const magicField = document.createElement('input');
+      magicField.type = 'hidden';
+      magicField.name = 'magic';
+      magicField.value = magic;
 
-            const magicField = document.createElement('input');
-            magicField.type = 'hidden';
-            magicField.name = 'magic';
-            magicField.value = magic;
+      const submitField = document.createElement('input');
+      submitField.type = 'hidden';
+      submitField.name = 'Submit';
+      submitField.value = 'Login';
 
-            const submitField = document.createElement('input');
-            submitField.type = 'hidden';
-            submitField.name = 'Submit';
-            submitField.value = 'Login';
+      form.appendChild(nameField);
+      form.appendChild(passwordField);
+      form.appendChild(magicField);
+      form.appendChild(submitField);
 
-            form.appendChild(nameField);
-            form.appendChild(passwordField);
-            form.appendChild(magicField);
-            form.appendChild(submitField);
+      document.body.appendChild(form);
+      form.submit();
+      // FaceService.loginFortinetWithPassword(magic, employeeId, password)
+      //   .then(async (loginResponse) => {
+      //     if (loginResponse) {
+      //       setResponseMessage('ยืนยันตัวตนสำเร็จ');
+      //       await new Promise(resolve => setTimeout(resolve, 3000));
 
-            document.body.appendChild(form);
-            form.submit();
-          } else {
-            console.log('fgtauth : FAIL');
-            setResponseMessage('เกิดข้อผิดพลาด\n' + loginResponse.data.Message);
-          }
-        })
-        .catch(async () => {
-          console.log('Login Fortinet : FAIL');
-          setResponseMessage('เกิดข้อผิดพลาด');
-        });
+      //       // Create and submit a hidden form programmatically
+      //       const form = document.createElement('form');
+      //       form.method = 'post';
+      //       form.action = 'https://192.168.31.1:1000/keepalive?';
+
+      //       const nameField = document.createElement('input');
+      //       nameField.type = 'hidden';
+      //       nameField.name = 'username';
+      //       nameField.value = employeeId;
+
+      //       const passwordField = document.createElement('input');
+      //       passwordField.type = 'hidden';
+      //       passwordField.name = 'password';
+      //       passwordField.value = password;
+
+      //       const magicField = document.createElement('input');
+      //       magicField.type = 'hidden';
+      //       magicField.name = 'magic';
+      //       magicField.value = magic;
+
+      //       const submitField = document.createElement('input');
+      //       submitField.type = 'hidden';
+      //       submitField.name = 'Submit';
+      //       submitField.value = 'Login';
+
+      //       form.appendChild(nameField);
+      //       form.appendChild(passwordField);
+      //       form.appendChild(magicField);
+      //       form.appendChild(submitField);
+
+      //       document.body.appendChild(form);
+      //       form.submit();
+      //     } else {
+      //       console.log('fgtauth : FAIL');
+      //       setResponseMessage('เกิดข้อผิดพลาด\n' + loginResponse.data.Message);
+      //     }
+      //   })
+      //   .catch(async () => {
+      //     console.log('Login Fortinet : FAIL');
+      //     setResponseMessage('เกิดข้อผิดพลาด');
+      //   });
     }
   };
 

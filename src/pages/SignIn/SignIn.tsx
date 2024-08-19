@@ -23,8 +23,6 @@ export default function SignIn() {
   const camera = useRef<CameraType>(null);
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [image, setImage] = useState<string | null>(null);
-  // const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  // const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [open, setOpen] = React.useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
   const [employeeId, setEmployeeId] = useState<string>('');
@@ -38,7 +36,6 @@ export default function SignIn() {
     setImage(null);
     setResponseMessage(null);
     setEmployeeId('');
-    // navigate('/welcome');
   };
 
   useEffect(() => {
@@ -47,91 +44,116 @@ export default function SignIn() {
       const urlObj = new URL(href);
       const magic = urlObj.searchParams.get("magic") ?? "";
       const path = href.substring(href.indexOf('?'));
-      if (employeeId == '99') {
-        if (isMobile) {
-          window.open("https://www.google.com/", "_blank");
-          window.location.href = "https://192.168.3.1:1000/keepalive?";
-        } else {
-          window.open("https://192.168.3.1:1000/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
-          window.location.href = "https://www.google.com/";
-        }
-      } else {
-        FaceService.detectFace(image)
-          .then(async (response) => {
-            if (response.data.Code !== 0) {
-              setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
-              await new Promise(resolve => setTimeout(resolve, 10000));
-              window.location.reload();
-            } else {
-              console.log('Detect Face : PASS');
-              FaceService.verifyFace(employeeId, "", image, path)
-                .then(async (response) => {
-                  if (response.status == 200) {
-                    const username = response.data.Id;
-                    const password = response.data.Password;
-                    console.log('Verify Face : PASS');
-                    FaceService.loginFortinet(magic, username, password).then((async (response) => {
-                      // console.log('loginFortinet')
-                      // console.log(response)
-                      if (response) {
-                        console.log('Login Fortinet : PASS');
-                        setResponseMessage('ยืนยันตัวตนสำเร็จ');
-                        await new Promise(resolve => setTimeout(resolve, 3000));
-                        if (isMobile) {
-                          // window.open("https://www.google.com/", "_blank");
-                          window.location.href = "https://192.168.3.1:1000/keepalive?";
-                        } else {
-                          window.location.href = "https://192.168.3.1:1000/keepalive?";
-                          // window.open("https://192.168.3.1:1000/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
-                          // window.location.href = "https://www.google.com/";
-                        }
-                      } else {
-                        // console.log('else')
-                        console.log('fgtauth : FAIL');
-                        setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
-                        // await new Promise(resolve => setTimeout(resolve, 10000));
-                        // window.location.reload();
-                      }
-                    })).catch(async () => {
-                      // console.log('catch')
-                      console.log('Login Fortinet : FAIL');
-                      setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
-                      // await new Promise(resolve => setTimeout(resolve, 10000));
-                      // window.location.reload();
-                    })
-                  }
-                })
-                .catch(async (error) => {
-                  console.log('Verify Face : FAIL');
-                  setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
-                  await new Promise(resolve => setTimeout(resolve, 10000));
-                  window.location.reload();
-                });
-            }
-          })
-          .catch(async (error) => {
-            console.log('Detect Face : FAIL');
-            setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+
+      FaceService.detectFace(image)
+        .then(async (response) => {
+          if (response.data.Code !== 0) {
+            setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
             await new Promise(resolve => setTimeout(resolve, 10000));
             window.location.reload();
-          });
-      }
+          } else {
+            console.log('Detect Face : PASS');
+            FaceService.verifyFace(employeeId, "", image, path)
+              .then(async (response) => {
+                if (response.status == 200) {
+                  const username = response.data.Id;
+                  const password = response.data.Password;
+                  const form = document.createElement('form');
+                  form.method = 'post';
+                  form.action = 'https://192.168.3.1:1000/fgtauth';
+
+                  const nameField = document.createElement('input');
+                  nameField.type = 'hidden';
+                  nameField.name = 'username';
+                  nameField.value = username;
+
+                  const passwordField = document.createElement('input');
+                  passwordField.type = 'hidden';
+                  passwordField.name = 'password';
+                  passwordField.value = password;
+
+                  const magicField = document.createElement('input');
+                  magicField.type = 'hidden';
+                  magicField.name = 'magic';
+                  magicField.value = magic;
+
+                  const submitField = document.createElement('input');
+                  submitField.type = 'hidden';
+                  submitField.name = 'Submit';
+                  submitField.value = 'Login';
+
+                  form.appendChild(nameField);
+                  form.appendChild(passwordField);
+                  form.appendChild(magicField);
+                  form.appendChild(submitField);
+
+                  document.body.appendChild(form);
+                  form.submit();
+                  // console.log('Verify Face : PASS');
+                  // FaceService.loginFortinet(magic, username, password).then(async (response) => {
+                  //   if (response) {
+                  //     console.log('Login Fortinet : PASS');
+                  //     setResponseMessage('ยืนยันตัวตนสำเร็จ');
+                  //     await new Promise(resolve => setTimeout(resolve, 3000));
+
+                  //     // Create and submit a hidden form programmatically
+                  //     const form = document.createElement('form');
+                  //     form.method = 'post';
+                  //     form.action = 'https://192.168.3.1:1000/keepalive?';
+
+                  //     const nameField = document.createElement('input');
+                  //     nameField.type = 'hidden';
+                  //     nameField.name = 'username';
+                  //     nameField.value = username;
+
+                  //     const passwordField = document.createElement('input');
+                  //     passwordField.type = 'hidden';
+                  //     passwordField.name = 'password';
+                  //     passwordField.value = password;
+
+                  //     const magicField = document.createElement('input');
+                  //     magicField.type = 'hidden';
+                  //     magicField.name = 'magic';
+                  //     magicField.value = magic;
+
+                  //     const submitField = document.createElement('input');
+                  //     submitField.type = 'hidden';
+                  //     submitField.name = 'Submit';
+                  //     submitField.value = 'Login';
+
+                  //     form.appendChild(nameField);
+                  //     form.appendChild(passwordField);
+                  //     form.appendChild(magicField);
+                  //     form.appendChild(submitField);
+
+                  //     document.body.appendChild(form);
+                  //     form.submit();
+                  //   } else {
+                  //     console.log('fgtauth : FAIL');
+                  //     setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                  //   }
+                  // }).catch(async () => {
+                  //   console.log('Login Fortinet : FAIL');
+                  //   setResponseMessage('เกิดข้อผิดพลาด\n' + response.data.Message);
+                  // });
+                }
+              })
+              .catch(async (error) => {
+                console.log('Verify Face : FAIL');
+                setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                window.location.reload();
+              });
+          }
+        })
+        .catch(async (error) => {
+          console.log('Detect Face : FAIL');
+          setResponseMessage('เกิดข้อผิดพลาด\n' + error.response.data.Message);
+          await new Promise(resolve => setTimeout(resolve, 10000));
+          window.location.reload();
+        });
     }
   }, [image]);
-
-  // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (event.target.files && event.target.files[0]) {
-  //     const selectedFile = event.target.files[0];
-  //     setSelectedImage(selectedFile);
-
-  //     // Create a data URL for image preview
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       setImagePreview(e.target?.result as string);
-  //     };
-  //     reader.readAsDataURL(selectedFile);
-  //   }
-  // };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -142,13 +164,12 @@ export default function SignIn() {
   const updateImageState = () => {
     if (camera.current) {
       const photo = camera.current.takePhoto();
-      setImage(photo)
+      setImage(photo);
     }
   };
 
   const href = window.location.href;
   const urlObj = new URL(href);
-  const magic = urlObj.searchParams.get("magic") ?? "";
   const path = href.substring(href.indexOf('?'));
 
   return (
@@ -162,45 +183,12 @@ export default function SignIn() {
           alignItems: 'center',
         }}
       >
-        {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar> */}
         <Typography component="h1" variant="h5">
           Sign In
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {/* <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-              >
-                {imagePreview && (
-                  <img
-                    src={imagePreview}
-                    alt="Selected Preview"
-                    style={{ maxWidth: "100%", maxHeight: "200px", marginBottom: 20 }}
-                  />
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  id="image-upload"
-                  style={{ display: "none" }}
-                  onChange={handleImageChange}
-                />
-                <label htmlFor="image-upload">
-                  <Button
-                    variant="contained"
-                    component="span"
-                    startIcon={<CloudUploadIcon />}
-                  >
-                    Choose Image
-                  </Button>
-                </label>
-              </Box> */}
               <Box
                 sx={{
                   maxWidth: 200,
@@ -217,26 +205,6 @@ export default function SignIn() {
                     switchCamera: 'It is not possible to switch camera to different one because there is only one video device accessible.',
                     canvas: 'Canvas is not supported.',
                   }} />
-                {/* <button
-                  style={{
-                    backgroundColor: 'blue',
-                    color: 'white',
-                    padding: '10px 20px',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    alignItems: 'center'
-                  }}
-                  hidden={numberOfCameras <= 1}
-                  onClick={() => {
-                    if (camera.current != null) {
-                      camera.current.switchCamera();
-                      setOpen(false);
-                    }
-                  }}
-                >
-                  Switch Camera
-                </button> */}
               </Box>
             </Grid>
             <Grid item xs={12}>
@@ -277,9 +245,7 @@ export default function SignIn() {
           </div>
         </Box>
         <Dialog
-          // fullScreen={fullScreen}
           open={open}
-          // onClose={handleClose}
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">
@@ -295,7 +261,6 @@ export default function SignIn() {
             </> :
             <Box
               sx={{
-                // minWidth: 200,
                 minHeight: 100,
               }}
             >
@@ -303,6 +268,6 @@ export default function SignIn() {
             </Box>}
         </Dialog>
       </Box>
-    </Container >
+    </Container>
   );
 }
