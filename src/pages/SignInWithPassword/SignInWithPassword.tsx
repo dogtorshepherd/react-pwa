@@ -63,13 +63,18 @@ export default function SignInWithPassword() {
                   FaceService.loginFortinetWithPassword(magic, username, password).then((async (response) => {
                     if (response) {
                       setResponseMessage('ยืนยันตัวตนสำเร็จ');
-                      await new Promise(resolve => setTimeout(resolve, 3000));
+                      await new Promise(resolve => setTimeout(resolve, 5000));
                       if (isMobile) {
-                        window.open("https://www.google.com/", "_blank");
-                        window.location.href = "https://192.168.31.1/keepalive?";
+                        // console.log("is Mobile")
+                        // window.open("https://www.google.com/", "_blank");
+                        window.location.href = "https://192.168.31.1:1000/keepalive?";
                       } else {
-                        window.open("https://192.168.31.1/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
-                        window.location.href = "https://www.google.com/";
+                        // console.log("is not Mobile")
+                        // window.open("https://192.168.31.1:1000/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
+                        // window.location.href = "https://www.google.com/";
+                        window.location.href = "https://192.168.31.1:1000/keepalive?";
+                        // window.location.href = "https://www.google.com/";
+                        // window.open("https://192.168.31.1:1000/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
                       }
                     } else {
                       // console.log('else')
@@ -244,7 +249,7 @@ export default function SignInWithPassword() {
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to={"https://192.168.31.1:1003/logout?"} style={{ textAlign: 'center' }}>
+            <Link to={"https://192.168.31.1:1000/logout?"} style={{ textAlign: 'center' }}>
               Logout
             </Link>
           </div>

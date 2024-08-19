@@ -3,7 +3,7 @@ import https from 'https';
 import http from "../http-common";
 
 const axiosInstanceNoPass = axios.create({
-  baseURL: 'https://192.168.3.1:1003',
+  baseURL: 'https://192.168.3.1:1000',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
     // "Access-Control-Allow-Origin": "*",
@@ -15,7 +15,7 @@ const axiosInstanceNoPass = axios.create({
 });
 
 const axiosInstanceWithPass = axios.create({
-  baseURL: 'https://192.168.31.1:1003',
+  baseURL: 'https://192.168.31.1:1000',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
     // "Access-Control-Allow-Origin": "*",
@@ -94,8 +94,8 @@ const verifyFace = (employeeId: string, password: string, image: string, path: s
 
 const loginFortinet = async (magic: string, username: string, password: string): Promise<any> => {
   try {
-    const fortiResult = await axiosInstanceNoPass.post(
-      'https://192.168.3.1:1003/fgtauth',
+    const fortiResult = await axiosInstanceWithPass.post(
+      'https://192.168.3.1:1000/fgtauth',
       new URLSearchParams({
         magic: magic,
         username: username,
@@ -106,16 +106,20 @@ const loginFortinet = async (magic: string, username: string, password: string):
   } catch (fortiError) {
     console.error('fortiError:', fortiError);
   }
-
-  const result = await fetchWithRetry("/");
-  return result
-
+  try {
+    const result = await fetchWithRetry("/");
+    console.log('fetchWithRetry result:', result)
+    return true
+  } catch (fetchWithRetryError) {
+    console.error('fetchWithRetryError:', fetchWithRetryError);
+    return false
+  }
 };
 
 const loginFortinetWithPassword = async (magic: string, username: string, password: string): Promise<any> => {
   try {
     const fortiResult = await axiosInstanceWithPass.post(
-      'https://192.168.31.1:1003/fgtauth',
+      'https://192.168.31.1:1000/fgtauth',
       new URLSearchParams({
         magic: magic,
         username: username,
@@ -126,10 +130,14 @@ const loginFortinetWithPassword = async (magic: string, username: string, passwo
   } catch (fortiError) {
     console.error('fortiError:', fortiError);
   }
-
-  const result = await fetchWithRetry("/");
-  return result
-
+  try {
+    const result = await fetchWithRetry("/");
+    console.log('fetchWithRetry result:', result)
+    return true
+  } catch (fetchWithRetryError) {
+    console.error('fetchWithRetryError:', fetchWithRetryError);
+    return false
+  }
 };
 
 // const fetchWithRetry = async (url: string, retries = 3, delayMs = 1000) => {

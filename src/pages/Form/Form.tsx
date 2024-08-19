@@ -37,13 +37,39 @@ const Form: React.FC = () => {
           if (loginResponse) {
             setResponseMessage('ยืนยันตัวตนสำเร็จ');
             await new Promise(resolve => setTimeout(resolve, 3000));
-            if (isMobile) {
-              window.open("https://www.google.com/", "_blank");
-              window.location.href = "https://192.168.31.1:1003/keepalive?";
-            } else {
-              window.open("https://192.168.31.1:1003/keepalive?", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
-              window.location.href = "https://www.google.com/";
-            }
+
+            // Create and submit a hidden form programmatically
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = 'https://192.168.31.1:1000/keepalive?';
+
+            const nameField = document.createElement('input');
+            nameField.type = 'hidden';
+            nameField.name = 'username';
+            nameField.value = employeeId;
+
+            const passwordField = document.createElement('input');
+            passwordField.type = 'hidden';
+            passwordField.name = 'password';
+            passwordField.value = password;
+
+            const magicField = document.createElement('input');
+            magicField.type = 'hidden';
+            magicField.name = 'magic';
+            magicField.value = magic;
+
+            const submitField = document.createElement('input');
+            submitField.type = 'hidden';
+            submitField.name = 'Submit';
+            submitField.value = 'Login';
+
+            form.appendChild(nameField);
+            form.appendChild(passwordField);
+            form.appendChild(magicField);
+            form.appendChild(submitField);
+
+            document.body.appendChild(form);
+            form.submit();
           } else {
             console.log('fgtauth : FAIL');
             setResponseMessage('เกิดข้อผิดพลาด\n' + loginResponse.data.Message);
@@ -96,7 +122,7 @@ const Form: React.FC = () => {
       </div>
       {responseMessage && <p className="response-message">{responseMessage}</p>}
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Link to={"https://192.168.31.1:1003/logout?"} style={{ textAlign: 'center' }}>
+        <Link to={"https://192.168.31.1:1000/logout?"} style={{ textAlign: 'center' }}>
           Logout
         </Link>
       </div>
