@@ -8,7 +8,6 @@ enum Pages {
   SignUp,
   SignIn,
   SignInWithPassword,
-  SignInWithImage,
   Welcome,
   SignInWithImage
 }
